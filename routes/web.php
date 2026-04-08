@@ -2,7 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
+// PUBLIC
 Route::get('/', function () {
+    return redirect('/dashboard');
+});
+
+Route::get('/dashboard', function () {
     return view('public.dashboard');
 })->name('dashboard');
 
@@ -18,6 +23,12 @@ Route::get('/tentang', function () {
     return view('public.tentang');
 })->name('tentang');
 
+Route::get('/tnc', function () {
+    return view('public.tnc');
+})->name('tnc');
+
+
+// ADMIN
 Route::prefix('admin')->group(function () {
 
     Route::get('/dashboard', function () {
@@ -35,4 +46,5 @@ Route::prefix('admin')->group(function () {
     Route::get('/posts', function () {
         return view('admin.posts');
     })->name('admin.posts');
+
 });

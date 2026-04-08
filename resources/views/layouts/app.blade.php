@@ -24,25 +24,45 @@
 </head>
 <body class="text-slate-800">
 
+<!-- NAVBAR -->
 <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <div class="max-w-[1280px] mx-auto px-8 h-20 flex items-center justify-between">
 
         <div class="flex items-center gap-12">
-            <div class="flex items-center gap-3 font-black text-[38px] text-[#083B6E] tracking-tight">
-                <img src="{{ asset('storage/logo.png') }}" class="w-8 h-8" alt="logo">
-                <span>SuraTrend</span>
-            </div>
 
+            <!-- LOGO (FIXED) -->
+            <a href="/dashboard" class="flex items-center gap-3">
+                <img src="{{ asset('storage/logo.png') }}" class="w-8 h-8" alt="logo">
+                <span class="font-black text-[32px] text-[#083B6E]">SuraTrend</span>
+            </a>
+
+            <!-- MENU -->
             <div class="hidden lg:flex items-center gap-8 text-[18px] font-semibold">
-                <a href="/dashboard" class="text-[#083B6E] relative after:absolute after:-bottom-3 after:left-0 after:w-full after:h-[3px] after:bg-[#2E9F43] after:rounded-full">
+
+                <a href="/dashboard"
+                   class="{{ request()->is('dashboard') ? 'text-[#083B6E] border-b-2 border-[#2E9F43]' : 'text-slate-500 hover:text-[#083B6E]' }}">
                     Dashboard
                 </a>
-                <a href="#" class="text-slate-500 hover:text-[#083B6E] transition">Hashtag Populer</a>
-                <a href="#" class="text-slate-500 hover:text-[#083B6E] transition">Keyword Dominan</a>
-                <a href="#" class="text-slate-500 hover:text-[#083B6E] transition">Tentang</a>
+
+                <a href="/hashtag"
+                   class="{{ request()->is('hashtag') ? 'text-[#083B6E] border-b-2 border-[#2E9F43]' : 'text-slate-500 hover:text-[#083B6E]' }}">
+                    Hashtag Populer
+                </a>
+
+                <a href="/keyword"
+                   class="{{ request()->is('keyword') ? 'text-[#083B6E] border-b-2 border-[#2E9F43]' : 'text-slate-500 hover:text-[#083B6E]' }}">
+                    Keyword Dominan
+                </a>
+
+                <a href="/tentang"
+                   class="{{ request()->is('tentang') ? 'text-[#083B6E] border-b-2 border-[#2E9F43]' : 'text-slate-500 hover:text-[#083B6E]' }}">
+                    Tentang
+                </a>
+
             </div>
         </div>
 
+        <!-- SEARCH -->
         <div class="relative hidden md:block">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[22px]">search</span>
             <input
@@ -55,10 +75,12 @@
     </div>
 </nav>
 
+<!-- CONTENT -->
 <main class="max-w-[1280px] mx-auto px-8 pt-36 pb-20">
     @yield('content')
 </main>
 
+<!-- FOOTER -->
 <footer class="border-t border-slate-200 mt-10 bg-white">
     <div class="max-w-[1280px] mx-auto px-8 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-slate-400 text-sm">
         <div>
@@ -66,7 +88,9 @@
             <p>© 2026 SuraTrend Living Archive. All rights reserved. Environmental Data Analytics.</p>
         </div>
 
-        <a href="#" class="hover:text-[#083B6E]">Terms and Conditions</a>
+        <a href="/tnc" class="hover:text-[#083B6E]">
+            Terms and Conditions
+        </a>
     </div>
 </footer>
 
