@@ -134,7 +134,7 @@
         </div>
 
         <div class="px-4 py-6 border-t border-slate-200">
-            <a href="{{ route('login') }}" class="sidebar-link text-[#DC2626] hover:bg-red-50 hover:text-[#DC2626]">
+            <a href="{{ route('admin.login') }}" class="sidebar-link text-[#DC2626] hover:bg-red-50 hover:text-[#DC2626]">
                 <img src="{{ asset('storage/export.png') }}" alt="Logout" class="sidebar-icon">
                 <span>Logout</span>
             </a>

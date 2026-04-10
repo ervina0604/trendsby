@@ -1,178 +1,171 @@
 @extends('layouts.admin')
 
-@section('title', 'Import Otomatis')
+@section('title','Import Otomatis')
+@section('header_title','Import Otomatis')
 
-@section('content')
-public function index()
-{
+@php
     $logs = [
         [
-            'tanggal' => '04 April 2026',
-            'akun' => 'Peduli Sungai Surabaya',
-            'username' => '@pedulisungaisurabaya',
-            'jumlah' => 3,
-            'status' => 'berhasil'
+            'date' => '04 April 2026',
+            'account_name' => 'Peduli Sungai Surabaya',
+            'account_username' => '@pedulisungaisurabaya',
+            'account_code' => 'P',
+            'account_bg' => 'bg-[#CFE1F7]',
+            'posts' => 3,
+            'status' => 'Berhasil',
+            'status_bg' => 'bg-[#E4F1E7]',
+            'status_text' => 'text-[#2E7D32]',
         ],
         [
-            'tanggal' => '03 April 2026',
-            'akun' => 'Ecoton',
-            'username' => '@ecoton',
-            'jumlah' => 2,
-            'status' => 'berhasil'
+            'date' => '03 April 2026',
+            'account_name' => 'Ecoton',
+            'account_username' => '@ecoton',
+            'account_code' => 'E',
+            'account_bg' => 'bg-[#97E082]',
+            'posts' => 2,
+            'status' => 'Berhasil',
+            'status_bg' => 'bg-[#E4F1E7]',
+            'status_text' => 'text-[#2E7D32]',
         ],
         [
-            'tanggal' => '02 April 2026',
-            'akun' => 'Peduli Sungai Surabaya',
-            'username' => '@pedulisungaisurabaya',
-            'jumlah' => 0,
-            'status' => 'berhasil'
+            'date' => '02 April 2026',
+            'account_name' => 'Peduli Sungai Surabaya',
+            'account_username' => '@pedulisungaisurabaya',
+            'account_code' => 'P',
+            'account_bg' => 'bg-[#CFE1F7]',
+            'posts' => 0,
+            'status' => 'Berhasil',
+            'status_bg' => 'bg-[#E4F1E7]',
+            'status_text' => 'text-[#2E7D32]',
         ],
     ];
+@endphp
 
-    return view('admin.import', [
-        'logs' => $logs,
-        'lastUpdate' => '4 April 2026, 08:00',
-        'newPosts' => 5,
-        'accuracy' => '94%'
-    ]);
-}
-<!-- STATUS -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+@section('content')
 
-    <!-- STATUS CARD -->
-    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow">
-
-        <div class="flex justify-between items-center">
-            <div>
-                <span class="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full">
-                    ● Sistem Berjalan Normal
-                </span>
-
-                <h2 class="text-2xl font-bold text-blue-900 mt-3">
-                    Status Sinkronisasi Instagram
-                </h2>
-
-                <p class="text-sm text-gray-500 mt-2">
-                    Terakhir update: <b>{{ $lastUpdate ?? '4 April 2026, 08:00' }}</b>
-                </p>
-
-                <p class="text-sm text-green-600 mt-1">
-                    {{ $newPosts ?? 5 }} posting baru berhasil ditambahkan
-                </p>
-            </div>
-
-            <form method="POST" action="#">
-                @csrf
-                <button class="bg-blue-900 text-white px-6 py-3 rounded-full shadow hover:scale-105 transition">
-                    🔄 Ambil Data
-                </button>
-            </form>
+<section class="grid grid-cols-1 xl:grid-cols-[1.9fr_.9fr] gap-6 mb-12 items-start">
+    <div class="admin-card p-8 xl:p-10 min-h-[270px] relative overflow-hidden">
+        <div class="inline-flex items-center gap-2 h-[38px] px-5 rounded-full bg-[#97E082] text-[#2E7D32] text-[15px] font-extrabold uppercase tracking-[.04em] mb-7">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#2E7D32]"></span>
+            SISTEM BERJALAN NORMAL
         </div>
 
-    </div>
-
-    <!-- METRIK -->
-    <div class="bg-white p-6 rounded-2xl shadow">
-        <p class="text-xs text-gray-400 mb-2">Metrik Terkini</p>
-
-        <h2 class="text-4xl font-bold text-blue-900">
-            {{ $accuracy ?? '94%' }}
+        <h2 class="text-[58px] leading-[1.04] font-extrabold text-[#083B6E] tracking-[-0.05em] mb-7">
+            Status Sinkronisasi<br>Instagram
         </h2>
 
-        <p class="text-green-600 text-sm">+2%</p>
+        <div class="space-y-4">
+            <div class="flex items-center gap-4">
+                <img src="{{ asset('storage/jam.png') }}" alt="Update" class="w-6 h-6 object-contain">
+                <span class="text-[18px] text-slate-600">Terakhir update: 4 April 2026, 08:00</span>
+            </div>
 
-        <p class="text-sm text-gray-500 mt-3">
-            Keandalan scheduler dalam 30 hari terakhir.
-        </p>
-
-        <div class="mt-6 text-xs text-gray-400 flex justify-between">
-            <span>SCHEDULER V2.4</span>
-            <span class="text-green-600">ACTIVE</span>
+            <div class="flex items-center gap-4">
+                <img src="{{ asset('storage/berhasil.png') }}" alt="Berhasil" class="w-6 h-6 object-contain">
+                <span class="text-[18px] font-bold text-[#2E7D32]">5 posting baru berhasil ditambahkan</span>
+            </div>
         </div>
+
+        <div class="absolute right-8 top-1/2 -translate-y-1/2">
+            <button class="h-[112px] px-10 rounded-full bg-[#063A67] text-white text-[20px] font-extrabold shadow-[0_14px_28px_rgba(6,58,103,0.18)] hover:opacity-95 transition inline-flex items-center gap-4">
+                <img src="{{ asset('storage/sysnc.png') }}" alt="Sync" class="w-7 h-7 object-contain brightness-0 invert">
+                <span>Ambil Data<br>Terbaru</span>
+            </button>
+        </div>
+
+        <img src="{{ asset('storage/archive.png') }}" alt="Decorative" class="absolute right-12 top-10 w-[140px] opacity-[.06] object-contain">
     </div>
 
-</div>
+    <div class="admin-card p-8 min-h-[270px]">
+        <div class="text-[14px] uppercase tracking-[.16em] font-extrabold text-[#7C8AA0] mb-6">
+            METRIK TERKINI
+        </div>
 
-<!-- RIWAYAT -->
-<div class="bg-white p-6 rounded-2xl shadow">
+        <div class="flex items-end gap-3 mb-6">
+            <div class="text-[72px] leading-none font-extrabold text-[#083B6E] tracking-[-0.05em]">94%</div>
+            <div class="text-[26px] font-extrabold text-[#2E7D32] pb-3">+2%</div>
+        </div>
 
-    <div class="flex justify-between mb-4">
+        <p class="text-[18px] leading-[1.8] text-slate-600 mb-10">
+            Keandalan scheduler pengambilan data otomatis dalam 30 hari terakhir.
+            Performa optimal terdeteksi.
+        </p>
+
+        <div class="border-t border-slate-200 pt-8 flex items-center justify-between">
+            <span class="text-[15px] font-bold text-slate-500">SURA SCHEDULER V2.4</span>
+            <span class="text-[15px] font-extrabold text-[#2E7D32]">ACTIVE</span>
+        </div>
+    </div>
+</section>
+
+<section class="mb-8">
+    <div class="flex items-end justify-between gap-4 mb-6">
         <div>
-            <h3 class="text-xl font-bold text-blue-900">Riwayat Import</h3>
-            <p class="text-sm text-gray-500">
-                Log sinkronisasi data Instagram
+            <h2 class="text-[46px] leading-none font-extrabold text-[#083B6E] tracking-[-0.04em] mb-3">
+                Riwayat Import
+            </h2>
+            <p class="text-[18px] text-slate-600">
+                Log sinkronisasi data dari berbagai kanal media sosial.
             </p>
         </div>
 
-        <a href="#" class="text-blue-700 text-sm font-semibold">
-            Lihat Semua →
+        <a href="{{ route('admin.detail_log') }}"
+           class="inline-flex items-center gap-3 text-[16px] font-extrabold text-[#083B6E] hover:opacity-80 transition">
+            Lihat Semua Log
+            <img src="{{ asset('storage/naik.png') }}" alt="Arrow" class="w-4 h-4 object-contain">
         </a>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+    <div class="admin-card overflow-hidden">
+        <div class="grid grid-cols-[220px_1.4fr_220px_170px] px-8 py-5 text-[12px] uppercase tracking-[.16em] font-extrabold text-slate-400 border-b border-slate-200 bg-[#FBFBFB]">
+            <div>Tanggal Import</div>
+            <div>Akun Sumber</div>
+            <div>Jumlah Post Baru</div>
+            <div class="text-right">Status</div>
+        </div>
 
-            <thead class="text-gray-400 border-b">
-                <tr>
-                    <th class="py-3 text-left">Tanggal</th>
-                    <th class="text-left">Akun</th>
-                    <th class="text-center">Post Baru</th>
-                    <th class="text-right">Status</th>
-                </tr>
-            </thead>
+        @foreach($logs as $log)
+            <div class="grid grid-cols-[220px_1.4fr_220px_170px] px-8 py-7 items-center border-b border-slate-200 last:border-b-0 bg-white">
+                <div class="text-[18px] font-extrabold text-[#083B6E]">
+                    {{ $log['date'] }}
+                </div>
 
-            <tbody>
-                @forelse($logs ?? [] as $log)
-                <tr class="border-b hover:bg-gray-50">
+                <div class="flex items-center gap-4">
+                    <div class="w-[46px] h-[46px] rounded-[12px] {{ $log['account_bg'] }} flex items-center justify-center text-[#083B6E] font-extrabold">
+                        {{ $log['account_code'] }}
+                    </div>
+                    <div>
+                        <div class="text-[18px] font-extrabold text-[#202020]">{{ $log['account_name'] }}</div>
+                        <div class="text-[15px] text-slate-500">{{ $log['account_username'] }}</div>
+                    </div>
+                </div>
 
-                    <td class="py-4 font-semibold text-blue-900">
-                        {{ $log['tanggal'] }}
-                    </td>
+                <div>
+                    <span class="inline-flex items-center justify-center w-[42px] h-[42px] rounded-full bg-[#EEF1F3] text-[#083B6E] font-extrabold text-[18px]">
+                        {{ $log['posts'] }}
+                    </span>
+                </div>
 
-                    <td>
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center text-xs font-bold">
-                                {{ strtoupper(substr($log['akun'],0,1)) }}
-                            </div>
-                            <div>
-                                <p class="font-semibold">{{ $log['akun'] }}</p>
-                                <p class="text-xs text-gray-400">{{ $log['username'] }}</p>
-                            </div>
-                        </div>
-                    </td>
-
-                    <td class="text-center">
-                        <span class="bg-gray-200 px-3 py-1 rounded-full">
-                            {{ $log['jumlah'] }}
-                        </span>
-                    </td>
-
-                    <td class="text-right">
-                        @if($log['status'] == 'berhasil')
-                            <span class="text-green-600 font-semibold">✔ Berhasil</span>
-                        @else
-                            <span class="text-red-500 font-semibold">✖ Gagal</span>
-                        @endif
-                    </td>
-
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="4" class="text-center py-6 text-gray-400">
-                        Tidak ada data
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-
-        </table>
+                <div class="text-right">
+                    <span class="inline-flex items-center gap-2 px-5 h-[38px] rounded-full {{ $log['status_bg'] }} {{ $log['status_text'] }} font-extrabold text-[15px]">
+                        <img src="{{ asset('storage/berhasil.png') }}" alt="Status" class="w-4 h-4 object-contain">
+                        {{ $log['status'] }}
+                    </span>
+                </div>
+            </div>
+        @endforeach
     </div>
-</div>
+</section>
 
-<!-- FOOTER INFO -->
-<div class="mt-6 text-sm text-gray-500 flex justify-between items-center">
-    <p>⚠ Sistem mengambil data otomatis 1x sehari</p>
-    <p>© {{ date('Y') }} SuraTrend</p>
-</div>
+<section class="pt-8 border-t border-slate-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5">
+    <div class="inline-flex items-center gap-4 h-[54px] px-6 rounded-full bg-[#EEF0F2] text-[18px] text-slate-600">
+        <img src="{{ asset('storage/comment.png') }}" alt="Info" class="w-5 h-5 object-contain">
+        Sistem mengambil data otomatis 1 kali sehari melalui scheduler.
+    </div>
+
+    <div class="text-[14px] uppercase tracking-[.14em] font-extrabold text-slate-500">
+        © 2026 SURATREND ANALYTICS SYSTEM. ALL RIGHTS RESERVED.
+    </div>
+</section>
 
 @endsection

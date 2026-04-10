@@ -1,139 +1,165 @@
-@extends('layout.admin')
+@extends('layouts.admin')
 
-@section('title', 'Input Data Konten')
+@section('title','Input Data Konten')
+@section('header_title','Input Data Konten')
 
 @section('content')
 
-<div class="space-y-8">
-
-    <!-- HEADER -->
-    <div>
-        <p class="text-xs font-bold text-green-600 uppercase tracking-widest mb-2">
-            DATA ARCHIVE
-        </p>
-
-        <h1 class="text-3xl font-bold text-slate-800 mb-4">
-            Input Data Konten
-        </h1>
-
-        <div class="bg-green-100 border-l-4 border-green-600 p-4 rounded-xl text-sm text-green-800">
-            Gunakan form ini jika ada data yang belum masuk dari proses import otomatis.
-        </div>
-    </div>
-
-    <!-- GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        <!-- FORM -->
-        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm">
-
-            <form action="{{ route('admin.content.store') }}" method="POST" class="space-y-6">
-                @csrf
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <!-- AKUN -->
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500">Akun Instagram</label>
-                        <select name="account_id" class="w-full mt-2 p-3 bg-gray-100 rounded-lg">
-                            <option value="">Pilih Akun</option>
-                            @foreach($accounts as $acc)
-                                <option value="{{ $acc->id }}">
-                                    {{ $acc->username }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- TANGGAL -->
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500">Tanggal Posting</label>
-                        <input type="date" name="tanggal"
-                            class="w-full mt-2 p-3 bg-gray-100 rounded-lg"
-                            value="{{ old('tanggal') }}">
-                    </div>
-
-                </div>
-
-                <!-- CAPTION -->
-                <div>
-                    <label class="text-xs font-semibold text-gray-500">Caption</label>
-                    <textarea name="caption" rows="5"
-                        class="w-full mt-2 p-3 bg-gray-100 rounded-lg"
-                        placeholder="Masukkan caption...">{{ old('caption') }}</textarea>
-                </div>
-
-                <!-- HASHTAG -->
-                <div>
-                    <label class="text-xs font-semibold text-gray-500">Hashtag</label>
-                    <textarea name="hashtag" rows="3"
-                        class="w-full mt-2 p-3 bg-gray-100 rounded-lg"
-                        placeholder="#surabaya #lingkungan">{{ old('hashtag') }}</textarea>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-
-                    <!-- LIKE -->
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500">Jumlah Like</label>
-                        <input type="number" name="like"
-                            class="w-full mt-2 p-3 bg-gray-100 rounded-lg"
-                            value="{{ old('like', 0) }}">
-                    </div>
-
-                    <!-- COMMENT -->
-                    <div>
-                        <label class="text-xs font-semibold text-gray-500">Jumlah Comment</label>
-                        <input type="number" name="comment"
-                            class="w-full mt-2 p-3 bg-gray-100 rounded-lg"
-                            value="{{ old('comment', 0) }}">
-                    </div>
-
-                </div>
-
-                <!-- BUTTON -->
-                <div class="flex justify-end gap-3 pt-4">
-                    <button type="reset" class="px-6 py-2 text-gray-500">
-                        Reset
-                    </button>
-
-                    <button type="submit"
-                        class="bg-blue-800 text-white px-6 py-2 rounded-full shadow hover:scale-105 transition">
-                        Simpan Data
-                    </button>
-                </div>
-
-            </form>
-        </div>
-
-        <!-- SIDE PANEL -->
-        <div class="space-y-4">
-
-            <!-- INFO -->
-            <div class="bg-blue-900 text-white p-6 rounded-2xl">
-                <h3 class="font-semibold mb-3">Editorial Context</h3>
-                <p class="text-sm opacity-80">
-                    Data manual membantu analisis tren lingkungan di Surabaya.
-                </p>
+<section class="mb-10">
+    <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
+        <div>
+            <div class="text-[18px] uppercase tracking-[.16em] font-extrabold text-[#2E7D32] mb-4">
+                CONTENT ENTRY
             </div>
 
-            <!-- IMAGE -->
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1508780709619-79562169bc64"
-                     class="w-full h-40 object-cover">
+            <h2 class="text-[58px] leading-[1.04] font-extrabold text-[#083B6E] tracking-[-0.05em] mb-3">
+                Tambah Data Konten
+            </h2>
 
-                <div class="p-4 text-sm">
-                    <p class="font-semibold">Sungai Surabaya</p>
-                    <div class="w-full bg-gray-200 h-1 mt-2 rounded">
-                        <div class="bg-green-600 h-1 w-4/5 rounded"></div>
-                    </div>
+            <p class="text-[18px] text-slate-600 max-w-[700px]">
+                Input data posting Instagram secara manual untuk analisis hashtag, keyword, dan engagement.
+            </p>
+        </div>
+
+        <div class="inline-flex items-center gap-3 h-[54px] px-6 rounded-full bg-white shadow-[0_2px_10px_rgba(15,23,42,.035)]">
+            <img src="{{ asset('storage/live.png') }}" alt="Info" class="w-4 h-4 object-contain">
+            <span class="text-[16px] font-bold text-[#083B6E]">Mode Input Manual</span>
+        </div>
+    </div>
+</section>
+
+<section class="grid grid-cols-1 xl:grid-cols-[1.6fr_.7fr] gap-6 items-start">
+    <div class="admin-card p-8 xl:p-10">
+        <form class="space-y-7">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Akun Sumber
+                    </label>
+                    <select class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700">
+                        <option>Peduli Sungai Surabaya</option>
+                        <option>Ecoton</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Tanggal Posting
+                    </label>
+                    <input type="date" class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700">
                 </div>
             </div>
 
-        </div>
+            <div>
+                <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                    Caption
+                </label>
+                <textarea rows="7" placeholder="Masukkan caption postingan..."
+                          class="w-full rounded-[20px] bg-[#F4F6F8] px-5 py-4 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700 placeholder:text-slate-400 resize-none"></textarea>
+            </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Hashtag
+                    </label>
+                    <input type="text" placeholder="#sungaisurabaya, #plastik"
+                           class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700 placeholder:text-slate-400">
+                </div>
+
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Keyword Dominan
+                    </label>
+                    <input type="text" placeholder="sampah, limbah, pencemaran"
+                           class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700 placeholder:text-slate-400">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Jumlah Like
+                    </label>
+                    <input type="number" placeholder="0"
+                           class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700">
+                </div>
+
+                <div>
+                    <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                        Jumlah Komentar
+                    </label>
+                    <input type="number" placeholder="0"
+                           class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[14px] font-extrabold uppercase tracking-[.06em] text-[#083B6E] mb-3">
+                    Link Postingan
+                </label>
+                <input type="url" placeholder="https://instagram.com/..."
+                       class="w-full h-[56px] rounded-[16px] bg-[#F4F6F8] px-5 outline-none border border-transparent focus:border-[#B8D4EA] text-[16px] text-slate-700 placeholder:text-slate-400">
+            </div>
+
+            <div class="pt-3 flex flex-wrap gap-4">
+                <button type="submit"
+                        class="h-[56px] px-8 rounded-full bg-[#063A67] text-white text-[16px] font-extrabold shadow-[0_12px_24px_rgba(6,58,103,0.18)] hover:opacity-95 transition">
+                    Simpan Data
+                </button>
+
+                <button type="reset"
+                        class="h-[56px] px-8 rounded-full bg-white border border-slate-200 text-[#083B6E] text-[16px] font-extrabold hover:bg-slate-50 transition">
+                    Reset Form
+                </button>
+            </div>
+        </form>
     </div>
 
-</div>
+    <div class="space-y-6">
+        <div class="admin-card p-8">
+            <h3 class="text-[28px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-6">
+                Panduan Input
+            </h3>
+
+            <div class="space-y-5">
+                <div class="flex items-start gap-4">
+                    <img src="{{ asset('storage/acc.png') }}" alt="Step" class="w-5 h-5 object-contain mt-1">
+                    <p class="text-[16px] leading-[1.8] text-slate-600">
+                        Pastikan akun sumber sesuai dengan asal postingan.
+                    </p>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <img src="{{ asset('storage/acc.png') }}" alt="Step" class="w-5 h-5 object-contain mt-1">
+                    <p class="text-[16px] leading-[1.8] text-slate-600">
+                        Hashtag dapat diisi lebih dari satu dan dipisahkan dengan koma.
+                    </p>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <img src="{{ asset('storage/acc.png') }}" alt="Step" class="w-5 h-5 object-contain mt-1">
+                    <p class="text-[16px] leading-[1.8] text-slate-600">
+                        Keyword dominan disarankan berupa kata penting dari caption.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rounded-[28px] bg-[#063A67] p-8 text-white">
+            <div class="text-[14px] uppercase tracking-[.14em] font-extrabold text-[#7FA8CE] mb-5">
+                STATUS FORM
+            </div>
+
+            <div class="text-[32px] leading-[1.2] font-extrabold tracking-[-0.03em] mb-4">
+                Siap Input Data
+            </div>
+
+            <p class="text-[16px] leading-[1.8] text-slate-200">
+                Gunakan form ini untuk menambahkan dataset baru secara manual ke sistem SuraTrend.
+            </p>
+        </div>
+    </div>
+</section>
 
 @endsection

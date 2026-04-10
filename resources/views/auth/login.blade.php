@@ -20,7 +20,6 @@
     <div class="min-h-screen flex flex-col">
         <main class="flex-1 flex items-center justify-center px-6 py-12">
             <div class="w-full max-w-[460px]">
-                
                 <div class="text-center mb-10">
                     <div class="flex justify-center mb-6">
                         <img src="{{ asset('storage/logo.png') }}" alt="Logo SuraTrend" class="w-[96px] h-[96px] object-contain">
@@ -36,9 +35,7 @@
                 </div>
 
                 <div class="bg-white rounded-[30px] shadow-[0_10px_24px_rgba(15,23,42,0.08)] px-10 py-10">
-                    <form action="#" method="POST" class="space-y-7">
-                        @csrf
-
+                    <div class="space-y-7">
                         <div>
                             <label class="block text-[14px] font-extrabold text-[#083B6E] uppercase tracking-[.03em] mb-3">
                                 Username
@@ -78,14 +75,12 @@
                         </div>
 
                         <div class="pt-2">
-                            <button
-                                type="submit"
-                                class="w-full h-[58px] rounded-full bg-[#063A67] text-white text-[18px] font-extrabold shadow-[0_12px_24px_rgba(6,58,103,0.18)] hover:opacity-95 transition"
-                            >
+                            <a href="{{ route('admin.dashboard') }}"
+                            class="w-full h-[58px] rounded-full bg-[#063A67] text-white text-[18px] font-extrabold shadow-[0_12px_24px_rgba(6,58,103,0.18)] hover:opacity-95 transition inline-flex items-center justify-center">
                                 Masuk ke Dashboard
-                            </button>
+                            </a>
                         </div>
-                    </form>
+                    </div>
 
                     <div class="mt-10 pt-8 border-t border-slate-200">
                         <div class="flex items-start gap-4">
