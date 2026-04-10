@@ -1,187 +1,186 @@
 @extends('layouts.app')
 
-@section('title','Tentang SuraTrend')
-
-@php
-    $missions = [
-        [
-            'icon' => 'isu.png',
-            'title' => 'Dokumentasi Isu',
-            'desc' => 'Mengarsipkan setiap pergerakan isu lingkungan secara sistematis.'
-        ],
-        [
-            'icon' => 'analisis.png',
-            'title' => 'Analisis Tren',
-            'desc' => 'Menemukan pola dari ribuan interaksi digital untuk strategi advokasi.'
-        ],
-    ];
-
-    $methods = [
-        [
-            'title' => 'Frekuensi Hashtag',
-            'desc' => 'Melacak penggunaan hashtag populer untuk mengukur volume percakapan publik.',
-            'type' => 'progress',
-            'value' => 75
-        ],
-        [
-            'title' => 'Keyword Caption',
-            'desc' => 'Mengekstrak kata kunci dominan dalam setiap caption postingan.',
-            'type' => 'tags',
-            'tags' => ['Limbah','Konservasi','Pencemaran']
-        ],
-        [
-            'title' => 'Tren Waktu',
-            'desc' => 'Menganalisis periode puncak aktivitas postingan.',
-            'type' => 'bars'
-        ],
-    ];
-@endphp
+@section('title','Tentang')
 
 @section('content')
 
-<!-- HERO -->
-<section class="relative w-full h-[520px] rounded-[28px] overflow-hidden mb-16">
-    <img src="{{ asset('storage/hero.png') }}"
-         class="absolute inset-0 w-full h-full object-cover">
+<section class="relative left-1/2 right-1/2 -translate-x-1/2 w-screen min-h-[700px] overflow-hidden mb-16">
+    <img src="{{ asset('storage/hero.png') }}" alt="Tentang SuraTrend" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-[#063A67]/88"></div>
 
-    <div class="absolute inset-0 bg-[#063A67]/90"></div>
-
-    <div class="relative z-10 h-full flex items-center px-8">
-        <div class="max-w-3xl text-white">
-            <div class="uppercase text-xs tracking-[.3em] text-[#9CE38C] font-bold mb-4">
-                The Living Archive
+    <div class="relative max-w-[1280px] mx-auto px-7 xl:px-8 h-[700px] flex items-center">
+        <div class="max-w-[720px] text-white">
+            <div class="text-[18px] font-extrabold uppercase tracking-[.12em] text-[#97E082] mb-6">
+                THE LIVING ARCHIVE
             </div>
 
-            <h1 class="text-[48px] font-extrabold mb-4">
+            <h1 class="text-[72px] leading-[1.02] font-extrabold tracking-[-0.05em] mb-6">
                 Tentang SuraTrend
             </h1>
 
-            <p class="text-lg text-slate-200 leading-8">
-                Mendokumentasikan narasi digital untuk penyelamatan ekosistem Sungai Surabaya melalui analisis data media sosial.
+            <p class="text-[24px] leading-[1.65] text-white/90 max-w-[680px]">
+                Mendokumentasikan narasi digital untuk penyelamatan ekosistem
+                Sungai Surabaya melalui analisis data media sosial yang presisi.
             </p>
         </div>
     </div>
 </section>
 
+<section class="mb-20">
+    <div class="grid grid-cols-1 xl:grid-cols-[1.1fr_.9fr] gap-12 items-center">
+        <div>
+            <h2 class="text-[54px] leading-none font-extrabold text-[#083B6E] tracking-[-0.04em] mb-8">
+                Misi Kami
+            </h2>
 
-<!-- MISI -->
-<section class="grid lg:grid-cols-2 gap-12 items-center mb-20">
+            <p class="text-[22px] leading-[1.8] text-slate-600 max-w-[700px] mb-12">
+                SuraTrend hadir sebagai jembatan antara aktivitas digital dan kesadaran
+                lingkungan. Kami percaya bahwa setiap postingan, hashtag, dan diskusi di
+                Instagram adalah data berharga yang mencerminkan kepedulian publik terhadap
+                Sungai Surabaya.
+            </p>
 
-    <!-- LEFT -->
-    <div>
-        <h2 class="text-[32px] font-extrabold text-[#083B6E] mb-6">
-            Misi Kami
-        </h2>
-
-        <p class="text-gray-600 leading-8 mb-8">
-            SuraTrend hadir sebagai jembatan antara aktivitas digital dan kesadaran lingkungan.
-        </p>
-
-        <div class="grid sm:grid-cols-2 gap-6">
-            @foreach($missions as $item)
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <img src="{{ asset('storage/'.$item['icon']) }}" class="w-6 h-6 mb-3">
-                    
-                    <h3 class="font-bold text-[#083B6E] mb-2">
-                        {{ $item['title'] }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[760px]">
+                <div class="glass-card p-8 min-h-[220px]">
+                    <img src="{{ asset('storage/isu.png') }}" alt="Dokumentasi Isu" class="w-8 h-8 object-contain mb-6">
+                    <h3 class="text-[28px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-4">
+                        Dokumentasi Isu
                     </h3>
-
-                    <p class="text-sm text-gray-500">
-                        {{ $item['desc'] }}
+                    <p class="text-[18px] leading-[1.8] text-slate-500">
+                        Mengarsipkan setiap pergerakan isu lingkungan secara sistematis.
                     </p>
                 </div>
-            @endforeach
+
+                <div class="glass-card p-8 min-h-[220px]">
+                    <img src="{{ asset('storage/analisis.png') }}" alt="Analisis Tren" class="w-8 h-8 object-contain mb-6">
+                    <h3 class="text-[28px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-4">
+                        Analisis Tren
+                    </h3>
+                    <p class="text-[18px] leading-[1.8] text-slate-500">
+                        Menemukan pola dari ribuan interaksi digital untuk strategi advokasi.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative flex justify-center xl:justify-end">
+            <div class="relative w-full max-w-[500px] min-h-[620px]">
+                <img src="{{ asset('storage/safe.png') }}" alt="Poster Visual" class="w-full h-[620px] object-cover rounded-[34px] shadow-[0_20px_40px_rgba(15,23,42,0.16)]">
+
+                <div class="absolute left-[-24px] bottom-[-24px] bg-[#F6DCC7] rounded-[16px] px-7 py-5 shadow-[0_12px_24px_rgba(15,23,42,0.12)] max-w-[250px]">
+                    <div class="text-[16px] font-extrabold text-[#4A2F20] mb-2">
+                        Rising Awareness
+                    </div>
+                    <div class="text-[36px] leading-none font-extrabold text-[#4A2F20] tracking-[-0.04em] mb-2">
+                        +24%
+                    </div>
+                    <div class="text-[15px] leading-[1.7] text-[#8B6B57]">
+                        Peningkatan keterlibatan publik dalam 30 hari terakhir.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- RIGHT -->
-    <div class="relative flex justify-center">
-        <img src="{{ asset('storage/safe.png') }}"
-             class="rounded-[28px] shadow-xl w-[340px]">
-
-        <div class="absolute bottom-[-20px] left-10 bg-[#F4D7C1] p-4 rounded-xl shadow-md text-sm">
-            <div class="font-bold">Rising Awareness</div>
-            <div class="text-lg font-extrabold">+24%</div>
-            <div class="text-xs text-gray-600">Peningkatan keterlibatan publik</div>
-        </div>
-    </div>
-
 </section>
 
-
-<!-- METODOLOGI -->
-<section class="text-center mb-16">
-
-    <h2 class="text-[32px] font-extrabold text-[#083B6E] mb-12">
+<section class="mb-16">
+    <h2 class="text-[54px] leading-none font-extrabold text-[#083B6E] tracking-[-0.04em] text-center mb-14">
         Metodologi Analisis
     </h2>
 
-    <div class="grid md:grid-cols-3 gap-10 text-left">
-
-        @foreach($methods as $index => $item)
-        <div>
-            <div class="text-[60px] text-slate-200 font-black mb-2">
-                {{ str_pad($index+1,2,'0',STR_PAD_LEFT) }}
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+        <div class="relative pt-10">
+            <div class="absolute left-0 top-0 text-[92px] leading-none font-extrabold text-slate-200/60 tracking-[-0.05em]">
+                01
             </div>
 
-            <div class="flex items-center gap-2 mb-2">
-                <h3 class="font-bold text-[#083B6E]">
-                    {{ $item['title'] }}
-                </h3>
-            </div>
+            <h3 class="text-[30px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-4 relative z-10">
+                Frekuensi Hashtag
+            </h3>
 
-            <p class="text-gray-500 text-sm leading-7 mb-4">
-                {{ $item['desc'] }}
+            <p class="text-[18px] leading-[1.8] text-slate-500 mb-8 relative z-10">
+                Melacak penggunaan hashtag populer seperti #SaveSurabayaRiver untuk mengukur
+                volume percakapan publik dari waktu ke waktu.
             </p>
 
-            {{-- TYPE RENDER --}}
-            @if($item['type'] === 'progress')
-                <div class="h-2 bg-gray-200 rounded-full">
-                    <div class="h-full bg-green-600 rounded-full" style="width: {{ $item['value'] }}%"></div>
+            <div class="mt-8">
+                <div class="w-full h-[8px] rounded-full bg-slate-200 overflow-hidden">
+                    <div class="w-[68%] h-full bg-[#2E7D32] rounded-full"></div>
                 </div>
-
-            @elseif($item['type'] === 'tags')
-                <div class="flex gap-2 flex-wrap">
-                    @foreach($item['tags'] as $tag)
-                        <span class="bg-gray-200 px-3 py-1 rounded-full text-xs">
-                            {{ $tag }}
-                        </span>
-                    @endforeach
-                </div>
-
-            @elseif($item['type'] === 'bars')
-                <div class="flex items-end gap-2 h-12">
-                    <div class="w-6 h-4 bg-gray-300"></div>
-                    <div class="w-6 h-6 bg-gray-400"></div>
-                    <div class="w-6 h-10 bg-[#083B6E]"></div>
-                    <div class="w-6 h-5 bg-gray-400"></div>
-                </div>
-            @endif
-
+            </div>
         </div>
-        @endforeach
 
+        <div class="relative pt-10">
+            <div class="absolute left-0 top-0 text-[92px] leading-none font-extrabold text-slate-200/60 tracking-[-0.05em]">
+                02
+            </div>
+
+            <h3 class="text-[30px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-4 relative z-10">
+                Keyword Caption
+            </h3>
+
+            <p class="text-[18px] leading-[1.8] text-slate-500 mb-8 relative z-10">
+                Menggunakan Natural Language Processing sederhana untuk mengekstrak kata kunci
+                dominan dalam setiap caption postingan terkait.
+            </p>
+
+            <div class="flex flex-wrap gap-3 mt-8">
+                <span class="inline-flex items-center h-[30px] px-4 rounded-full bg-[#DCE5EE] text-[#325E86] text-[13px] font-extrabold">
+                    Limbah
+                </span>
+                <span class="inline-flex items-center h-[30px] px-4 rounded-full bg-[#CFEFCB] text-[#2E7D32] text-[13px] font-extrabold">
+                    Konservasi
+                </span>
+                <span class="inline-flex items-center h-[30px] px-4 rounded-full bg-[#DCE5EE] text-[#325E86] text-[13px] font-extrabold">
+                    Pencemaran
+                </span>
+            </div>
+        </div>
+
+        <div class="relative pt-10">
+            <div class="absolute left-0 top-0 text-[92px] leading-none font-extrabold text-slate-200/60 tracking-[-0.05em]">
+                03
+            </div>
+
+            <h3 class="text-[30px] font-extrabold text-[#083B6E] tracking-[-0.03em] mb-4 relative z-10">
+                Tren Waktu
+            </h3>
+
+            <p class="text-[18px] leading-[1.8] text-slate-500 mb-8 relative z-10">
+                Menganalisis periode puncak aktivitas postingan untuk mengidentifikasi momen
+                krisis atau kejadian lingkungan tertentu.
+            </p>
+
+            <div class="mt-8 h-[90px] flex items-end gap-3">
+                <div class="w-full h-[18%] bg-[#C7D7E5] rounded-t-[4px]"></div>
+                <div class="w-full h-[34%] bg-[#94B1C8] rounded-t-[4px]"></div>
+                <div class="w-full h-[58%] bg-[#0B5B94] rounded-t-[4px]"></div>
+                <div class="w-full h-[26%] bg-[#7F9DB7] rounded-t-[4px]"></div>
+            </div>
+        </div>
     </div>
-
 </section>
 
+<section class="mb-10">
+    <div class="rounded-[34px] bg-[#063A67] px-10 py-10 xl:px-12 xl:py-12 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
+        <div class="max-w-[650px]">
+            <h2 class="text-[42px] leading-[1.12] font-extrabold text-white tracking-[-0.04em] mb-5">
+                Mulai Eksplorasi Data Sekarang
+            </h2>
 
-<!-- CTA -->
-<section class="bg-[#063A67] text-white rounded-[28px] p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <p class="text-[20px] leading-[1.8] text-white/75">
+                Dapatkan wawasan mendalam tentang pergerakan isu lingkungan di
+                Surabaya melalui dashboard interaktif kami.
+            </p>
+        </div>
 
-    <div>
-        <h3 class="text-[26px] font-bold mb-2">
-            Mulai Eksplorasi Data Sekarang
-        </h3>
-        <p class="text-slate-300">
-            Dapatkan wawasan mendalam melalui dashboard interaktif kami.
-        </p>
+        <div>
+            <a href="{{ route('dashboard') }}"
+               class="inline-flex items-center justify-center h-[62px] px-10 rounded-full bg-[#2E9F43] text-white text-[20px] font-extrabold hover:opacity-95 transition shadow-[0_12px_24px_rgba(46,159,67,0.22)]">
+                Buka Dashboard
+            </a>
+        </div>
     </div>
-
-    <a href="/dashboard" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full font-bold flex items-center gap-2">
-        Buka Dashboard
-    </a>
-
 </section>
 
 @endsection
