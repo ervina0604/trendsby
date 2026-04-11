@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EngagementController;
+use App\Http\Controllers\FilterController;
+
+Route::get('/engagement', [EngagementController::class, 'show'])->name('engagement.show');
+Route::get('/filter', [FilterController::class, 'show'])->name('filter.show');
 
 Route::get('/admin/login', function () {
     return view('auth.login');
@@ -39,7 +44,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/engagement', function () {
         return view('admin.engagement');
     })->name('admin.engagement');
-
+    
     // Additional Routes for viewing details
     Route::get('/detail_hashtag', function () {
         return view('admin.detail_hashtag');
