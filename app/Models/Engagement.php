@@ -9,16 +9,19 @@ class Engagement extends Model
 {
     use HasFactory;
 
-    // Define the table if it's not the plural form of the model name (laravel by default assumes plural names for tables)
-    protected $table = 'engagements';
+    protected $table = 'engagements'; // Tentukan nama tabel yang digunakan
 
-    // Define the fillable properties (fields you want to mass-assign)
     protected $fillable = [
         'account',
         'caption',
         'likes',
         'comments',
-        'date',
+        'engagement', // Misalnya total engagement yang dihitung
     ];
 
+    // Definisikan relasi jika diperlukan
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 }

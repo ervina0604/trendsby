@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EngagementController;
-use App\Http\Controllers\FilterController;
+use App\Http\Controllers\Filter;
 
 Route::get('/engagement', [EngagementController::class, 'show'])->name('engagement.show');
-Route::get('/filter', [FilterController::class, 'show'])->name('filter.show');
+Route::get('/filter', [Filter::class, 'show'])->name('filter.show');
 
 Route::get('/admin/login', function () {
     return view('auth.login');

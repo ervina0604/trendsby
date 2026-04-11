@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Content; // Assuming you have a Content model
 
-class FilterController extends Controller
+class Filter extends Controller
 {
     public function show(Request $request)
     {
