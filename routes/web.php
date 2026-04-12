@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EngagementController;
 use App\Http\Controllers\Filter;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('public.dashboard');
@@ -63,6 +64,20 @@ Route::prefix('admin')->group(function () {
         return view('admin.engagement');
     })->name('admin.engagement');
     
+    Route::get('/detail_hashtag', function () {
+        return view('admin.detail_hashtag');
+    })->name('admin.detail_hashtag');
+
+    Route::get('/detail_keyword', function () {
+        return view('admin.detail_keyword');
+    })->name('admin.detail_keyword');
+
+    Route::get('/detail_log', function () {
+        return view('admin.detail_log');
+    })->name('admin.detail_log');
+
+    Route::post('/posts', [PostController::class, 'store'])->name('admin.posts.store');
+
     // Additional Routes for viewing details
     Route::get('/detail_hashtag', function () {
         return view('admin.detail_hashtag');
@@ -75,4 +90,5 @@ Route::prefix('admin')->group(function () {
     Route::get('/detail_log', function () {
         return view('admin.detail_log');
     })->name('admin.detail_log');
+    
 });
