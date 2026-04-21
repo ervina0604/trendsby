@@ -25,9 +25,18 @@ class PostController extends Controller
             'like_count' => $request->like_count ?? 0,
             'comment_count' => $request->comment_count ?? 0,
         ]);
-        
+
+        $score = $post->like_count + ($post->comment_count * 2);
+
+        DB::table('engagement')->insert([
+            'id_post' => $post->id_post,
+            'like_count' => $post->like_count,
+            'comment_count' => $post->comment_count,
+            'score' => $score,
+        ]);
+
         preg_match_all('/#(\w+)/u', $request->caption, $matches);
-        
+
         foreach ($matches[1] as $tag) {
             DB::table('hashtags')->insert([
                 'hashtag_text' => $tag,
@@ -35,10 +44,29 @@ class PostController extends Controller
             ]);
         }
 
+        $cleanText = preg_replace('/#\w+/u', '', $request->caption);
+
+        $words = preg_split('/\s+/', strtolower($cleanText));
+
+        $words = array_filter($words, function ($word) {
+            return !empty($word) && strlen($word) > 2;
+        });
+
+        $wordCounts = array_count_values($words);
+
+        foreach ($wordCounts as $word => $count) {
+            DB::table('keywords')->insert([
+                'keyword_text' => $word,
+                'frequency' => $count,
+            ]);
+        }
+
         return response()->json([
             'message' => 'Post berhasil ditambahkan',
             'data' => $post,
+            'score' => $score,
             'hashtags' => $matches[1],
+            'keywords' => $wordCounts,
         ], 201);
     }
 }
