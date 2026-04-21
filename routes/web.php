@@ -21,7 +21,6 @@ Route::get('/tentang', function () {
     return view('public.tentang');
 })->name('tentang');
 
-// Routes for engagement and filter
 Route::get('/engagement', [EngagementController::class, 'show'])->name('engagement.show');
 Route::get('/filter', [Filter::class, 'show'])->name('filter.show');
 
@@ -29,12 +28,9 @@ Route::get('/admin/login', function () {
     return view('auth.login');
 })->name('admin.login');
 
-// Admin Routes
 Route::prefix('admin')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [PostController::class, 'showDashboard'])->name('admin.dashboard');
 
     Route::get('/hashtag', function () {
         return view('admin.hashtag');
@@ -63,7 +59,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/engagement', function () {
         return view('admin.engagement');
     })->name('admin.engagement');
-    
+
     Route::get('/detail_hashtag', function () {
         return view('admin.detail_hashtag');
     })->name('admin.detail_hashtag');
@@ -75,20 +71,4 @@ Route::prefix('admin')->group(function () {
     Route::get('/detail_log', function () {
         return view('admin.detail_log');
     })->name('admin.detail_log');
-
-    Route::post('/posts', [PostController::class, 'store'])->name('admin.posts.store');
-
-    // Additional Routes for viewing details
-    Route::get('/detail_hashtag', function () {
-        return view('admin.detail_hashtag');
-    })->name('admin.detail_hashtag');
-
-    Route::get('/detail_keyword', function () {
-        return view('admin.detail_keyword');
-    })->name('admin.detail_keyword');
-
-    Route::get('/detail_log', function () {
-        return view('admin.detail_log');
-    })->name('admin.detail_log');
-    
 });
