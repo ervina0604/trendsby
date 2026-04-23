@@ -3,6 +3,23 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EngagementController;
 use App\Http\Controllers\Filter;
+use App\Http\Controllers\PostController;
+
+Route::get('/', function () {
+    return view('public.dashboard');
+})->name('dashboard');
+
+Route::get('/hashtag', function () {
+    return view('public.hashtag');
+})->name('hashtag');
+
+Route::get('/keyword', function () {
+    return view('public.keyword');
+})->name('keyword');
+
+Route::get('/tentang', function () {
+    return view('public.tentang');
+})->name('tentang');
 
 Route::get('/engagement', [EngagementController::class, 'show'])->name('engagement.show');
 Route::get('/filter', [Filter::class, 'show'])->name('filter.show');
@@ -13,9 +30,7 @@ Route::get('/admin/login', function () {
 
 Route::prefix('admin')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [PostController::class, 'showDashboard'])->name('admin.dashboard');
 
     Route::get('/hashtag', function () {
         return view('admin.hashtag');
@@ -44,8 +59,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/engagement', function () {
         return view('admin.engagement');
     })->name('admin.engagement');
-    
-    // Additional Routes for viewing details
+
     Route::get('/detail_hashtag', function () {
         return view('admin.detail_hashtag');
     })->name('admin.detail_hashtag');
