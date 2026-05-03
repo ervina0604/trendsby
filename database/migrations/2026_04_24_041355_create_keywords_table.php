@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('keywords', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('keywords', function (Blueprint $table) {
+        $table->unsignedBigInteger('id_keyword')->autoIncrement();
+        $table->string('keyword_text', 100);
+        $table->integer('frequency')->default(0);
+        $table->timestamps();
+    });
     }
 
     /**

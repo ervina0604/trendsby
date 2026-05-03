@@ -11,19 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('posts', function (Blueprint $table) {
-        $table->increments('id_post');
+        Schema::create('posts', function (Blueprint $table) {
+        $table->unsignedBigInteger('id_post')->autoIncrement();
         $table->unsignedBigInteger('id_user')->nullable();
         $table->text('caption')->nullable();
         $table->date('tanggal_post')->nullable();
         $table->integer('like_count')->default(0);
         $table->integer('comment_count')->default(0);
 
-        $table->foreign('id_user')
-              ->references('id')
-              ->on('users')
-              ->nullOnDelete();
-        });
+       $table->foreign('id_user')
+            ->references('id')->on('users')
+            ->onDelete('set null');
+
+        $table->timestamps();
+    });
     }
 
     /**

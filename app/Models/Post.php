@@ -17,5 +17,10 @@ class Post extends Model
         'comment_count',
     ];
 
+    public function getEngagementAttribute()
+    {
+        return $this->like_count + $this->comment_count;
+    }
+
     public $timestamps = false;
 }

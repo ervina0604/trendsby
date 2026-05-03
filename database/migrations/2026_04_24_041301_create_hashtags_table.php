@@ -12,7 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hashtags', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedBigInteger('id_hashtag')->autoIncrement();
+            $table->string('hashtag_text', 100);
+            $table->unsignedBigInteger('id_post')->nullable();
+
+            $table->foreign('id_post')
+                ->references('id_post')->on('posts')
+                ->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

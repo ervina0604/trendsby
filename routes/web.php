@@ -52,9 +52,7 @@ Route::prefix('admin')->group(function () {
         return view('admin.input');
     })->name('admin.input');
 
-    Route::get('/filter', function () {
-        return view('admin.filter');
-    })->name('admin.filter');
+    Route::get('/filter', [Filter::class, 'show'])->name('admin.filter');
 
     Route::get('/engagement', function () {
         return view('admin.engagement');

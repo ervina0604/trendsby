@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trend_analysis', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('trend_analysis', function (Blueprint $table) {
+        $table->unsignedBigInteger('id_trend')->autoIncrement();
+        $table->string('period', 50)->nullable();
+        $table->text('hashtag_result')->nullable();
+        $table->text('keyword_result')->nullable();
+        $table->timestamps();
+    });
     }
 
     /**
