@@ -69,4 +69,5 @@ Route::prefix('admin')->group(function () {
     Route::get('/detail_log', function () {
         return view('admin.detail_log');
     })->name('admin.detail_log');
+    
 });
