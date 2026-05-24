@@ -115,9 +115,20 @@
         <img src="{{ asset('storage/visual.png') }}" alt="Visual report" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-r from-[#0A4360]/95 via-[#0A4360]/78 to-[#0A4360]/25"></div>
 
+<<<<<<< HEAD
         <div class="absolute left-7 bottom-7 z-10 text-white max-w-[520px]">
             <div class="inline-flex items-center h-[30px] px-4 rounded-full bg-[#8A4D12] text-[12px] font-extrabold uppercase tracking-[.09em] mb-5">
                 LAPORAN TERKINI
+=======
+    <div class="relative min-h-[320px] rounded-[34px] overflow-hidden">
+        <img src="{{ asset('storage/visual.png') }}" alt="visual report" class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none">
+
+        <div class="absolute inset-0 bg-gradient-to-r from-[#063A67]/95 via-[#063A67]/70 to-[#063A67]/20 pointer-events-none"></div>
+
+        <div class="absolute left-6 sm:left-8 bottom-6 sm:bottom-8 z-10 max-w-[520px] text-white pr-6">
+            <div class="inline-flex bg-[#7A4B15] px-4 py-2 rounded-full text-xs sm:text-sm uppercase tracking-[.22em] font-black mb-5">
+                Laporan Terkini
+>>>>>>> 0f4e1d45621335f5591d9ba88f95c19b1bf03003
             </div>
 
             <h2 class="text-[22px] sm:text-[24px] xl:text-[25px] leading-[1.26] font-extrabold tracking-[-0.03em]">

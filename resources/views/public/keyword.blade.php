@@ -156,9 +156,15 @@
                 @endforeach
             </div>
 
+<<<<<<< HEAD
             <div class="pt-8">
                 <a href="{{ route('detail_keyword') }}"
                    class="w-full h-[54px] rounded-full border border-dashed border-slate-300 text-[#6B8AA4] text-[15px] font-extrabold inline-flex items-center justify-center hover:bg-white transition">
+=======
+            <div class="mt-6 text-center">
+                <a href="{{ route('detail.keyword') }}"
+                class="inline-block border border-dashed border-gray-300 px-4 py-2 rounded-full text-sm text-gray-500 hover:bg-gray-50 transition">
+>>>>>>> 0f4e1d45621335f5591d9ba88f95c19b1bf03003
                     Lihat Dataset Lengkap
                 </a>
             </div>
@@ -172,6 +178,7 @@
             <img src="{{ asset('storage/kalimas.png') }}" alt="Sungai Surabaya dan Kalimas" class="absolute inset-0 w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-t from-[#083B6E]/88 via-[#083B6E]/28 to-transparent"></div>
 
+<<<<<<< HEAD
             <div class="absolute left-6 bottom-6 text-white">
                 <div class="text-[12px] uppercase tracking-[.12em] font-semibold opacity-90 mb-3">
                     FOCUS AREA
@@ -179,6 +186,23 @@
                 <div class="text-[20px] font-extrabold tracking-[-0.02em]">
                     Sungai Surabaya & Kalimas
                 </div>
+=======
+    <!-- IMAGE -->
+    <div class="relative rounded-[28px] overflow-hidden shadow-md">
+
+           <img src="{{ asset('storage/kalimas.png') }}" 
+               alt="Sungai Kalimas"
+               class="w-full h-full object-cover pointer-events-none">
+
+           <div class="absolute inset-0 bg-gradient-to-t from-[#0A3A67]/90 to-transparent pointer-events-none"></div>
+
+        <div class="absolute bottom-6 left-6 text-white">
+            <div class="text-xs uppercase tracking-widest text-gray-300">
+                Focus Area
+            </div>
+            <div class="text-xl font-bold">
+                Sungai Surabaya & Kalimas
+>>>>>>> 0f4e1d45621335f5591d9ba88f95c19b1bf03003
             </div>
         </div>
 
