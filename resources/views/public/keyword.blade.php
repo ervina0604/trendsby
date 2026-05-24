@@ -6,145 +6,228 @@
 
 <section class="mb-12">
 
-    <!-- Label -->
     <div class="inline-block bg-[#F4D7C1] text-[#7A4B15] text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest mb-6">
         Analytics Report
     </div>
 
-    <!-- Heading -->
     <h1 class="text-[42px] font-extrabold text-[#0A3A67] leading-tight mb-4">
         Keyword Dominan dari Caption Instagram
     </h1>
 
     <p class="text-lg text-gray-500 max-w-2xl leading-8">
-        Kata-kata yang paling sering muncul dalam konten 
-        <span class="text-green-600 font-semibold">@pedulisungaisurabaya</span> dan 
-        <span class="text-green-600 font-semibold">@ecoton</span>. 
-        Analisis narasi lingkungan di media sosial Surabaya.
+        Analisis keyword dominan berdasarkan caption postingan Instagram terkait isu Sungai Surabaya, lingkungan, sampah, dan pencemaran.
     </p>
 
 </section>
 
+
+
 <section class="grid lg:grid-cols-[1.6fr_1fr] gap-8 mb-12">
 
-    <!-- LEFT: WORD CLOUD -->
+    {{-- WORD CLOUD --}}
     <div class="bg-white rounded-[30px] p-8 shadow-sm border border-gray-100">
 
         <div class="flex justify-between items-center mb-6">
+
             <div>
                 <h3 class="text-lg font-bold text-[#0A3A67]">
-                    Visualisasi Narasi
+                    Visualisasi Keyword
                 </h3>
+
                 <p class="text-sm text-gray-400">
-                    Kepadatan terminologi per periode 2024
+                    10 keyword paling dominan dari caption Instagram
                 </p>
             </div>
-        </div>
-
-        <!-- Word Cloud -->
-        <div class="text-center mt-10 space-y-6">
-
-            <div class="flex justify-center gap-10 flex-wrap">
-                <span class="text-[56px] font-extrabold text-[#0A3A67]">SAMPAH</span>
-                <span class="text-[48px] font-extrabold text-green-700">PLASTIK</span>
-            </div>
-
-            <div class="flex justify-center gap-8 flex-wrap text-[#0A3A67]">
-                <span class="text-2xl">PENCEMARAN</span>
-                <span class="text-3xl text-green-700 font-bold">BANJIR</span>
-                <span class="text-xl text-gray-500">LIMBAH</span>
-            </div>
-
-            <div class="flex justify-center gap-6 flex-wrap text-gray-500">
-                <span class="text-green-700 font-bold">AKSI BERSIH</span>
-                <span>KALIMAS</span>
-                <span class="text-[#0A3A67] font-semibold">MIKROPLASTIK</span>
-                <span>EDUKASI</span>
-            </div>
-
-            <div class="flex justify-center gap-6 flex-wrap">
-                <span class="text-[#0A3A67] font-bold">EKOSISTEM</span>
-                <span class="text-gray-400">SURABAYA</span>
-                <span class="text-green-700 font-bold">SUNGAI</span>
-            </div>
 
         </div>
 
-        <!-- Legend -->
-        <div class="flex gap-6 mt-10 text-sm text-gray-500">
+
+        <div class="min-h-[260px] flex flex-wrap items-center justify-center gap-4 overflow-hidden">
+
+            @if(isset($topKeywords) && count($topKeywords) > 0)
+
+                @php
+                    $keywords = array_slice($topKeywords, 0, 10, true);
+
+                    $maxCount = max($keywords);
+
+                    $colors = [
+                        'text-[#0A3A67]',
+                        'text-green-600',
+                        'text-slate-500',
+                        'text-blue-600',
+                        'text-emerald-700'
+                    ];
+                @endphp
+
+                @foreach($keywords as $word => $count)
+
+                    @php
+                        $size = 18 + (($count / $maxCount) * 28);
+
+                        $color = $colors[$loop->index % count($colors)];
+                    @endphp
+
+                    <span
+                        class="font-extrabold uppercase leading-none {{ $color }}"
+                        style="font-size: {{ $size }}px"
+                    >
+                        {{ $word }}
+                    </span>
+
+                @endforeach
+
+            @else
+
+                <p class="text-gray-400 text-center">
+                    Data keyword tidak tersedia
+                </p>
+
+            @endif
+
+        </div>
+
+
+        <div class="flex gap-6 mt-8 text-sm text-gray-500 flex-wrap">
+
             <div class="flex items-center gap-2">
                 <span class="w-3 h-3 bg-[#0A3A67] rounded-full"></span>
-                Isu Utama
+                Keyword Caption
             </div>
+
             <div class="flex items-center gap-2">
                 <span class="w-3 h-3 bg-green-600 rounded-full"></span>
-                Aksi Positif
+                Narasi Lingkungan
             </div>
+
         </div>
 
     </div>
 
-    <!-- RIGHT SIDE -->
+
+
+    {{-- RIGHT PANEL --}}
     <div class="space-y-6">
 
-        <!-- TOP KEYWORD CARD -->
+        {{-- TOP KEYWORD --}}
         <div class="bg-[#0A3A67] text-white rounded-[24px] p-6">
-            <div class="text-sm text-gray-300 mb-2 uppercase">
-                Top Keyword
+
+            <div class="text-sm text-gray-300 mb-3 uppercase tracking-wider">
+                Keyword Teratas
             </div>
 
-            <div class="flex items-end gap-2">
-                <span class="text-[48px] font-extrabold">154</span>
-                <span class="text-gray-300 mb-2">sebutan "sampah"</span>
-            </div>
+            @if(isset($topKeywords) && count($topKeywords) > 0)
+
+                @php
+                    $topWord = array_key_first($topKeywords);
+
+                    $topCount = reset($topKeywords);
+                @endphp
+
+                <div class="space-y-3">
+
+                    <div class="text-[38px] font-extrabold uppercase break-words leading-none">
+                        {{ $topWord }}
+                    </div>
+
+                    <div class="text-sm text-gray-300">
+                        Muncul sebanyak
+                        <span class="font-bold text-white">
+                            {{ $topCount }}
+                        </span>
+                        kali pada caption.
+                    </div>
+
+                </div>
+
+            @else
+
+                <div class="text-gray-300">
+                    Tidak ada data keyword
+                </div>
+
+            @endif
+
         </div>
 
-        <!-- RANKING -->
+
+
+        {{-- RANKING --}}
         <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100">
 
-            <h3 class="font-bold text-[#0A3A67] mb-4">
-                Ranking Keyword
-            </h3>
+            <div class="flex items-center justify-between mb-5">
+
+                <h3 class="font-bold text-[#0A3A67]">
+                    Ranking Keyword
+                </h3>
+
+                {{-- BUTTON DETAIL --}}
+                <a
+                    href="{{ route('detail.keyword') }}"
+                    class="inline-flex items-center gap-2 bg-[#0A3A67] hover:bg-[#0d4c88] text-white text-xs font-semibold px-4 py-2 rounded-full transition duration-300"
+                >
+                    Lihat Selengkapnya
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="w-4 h-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor">
+
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 5l7 7-7 7" />
+
+                    </svg>
+                </a>
+
+            </div>
 
             <div class="space-y-4 text-sm">
 
-                @php
-                    $keywords = [
-                        ['rank'=>1,'name'=>'sampah','count'=>154],
-                        ['rank'=>2,'name'=>'plastik','count'=>120],
-                        ['rank'=>3,'name'=>'pencemaran','count'=>98],
-                        ['rank'=>4,'name'=>'banjir','count'=>76],
-                        ['rank'=>5,'name'=>'limbah','count'=>65],
-                    ];
-                @endphp
+                @if(isset($topKeywords) && count($topKeywords) > 0)
 
-                @foreach($keywords as $item)
-                    <div class="flex justify-between items-center">
+                    @foreach(array_slice($topKeywords, 0, 10, true) as $word => $count)
 
-                        <div class="flex gap-4 items-center">
-                            <span class="font-bold text-green-600">
-                                {{ str_pad($item['rank'],2,'0',STR_PAD_LEFT) }}
-                            </span>
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
 
-                            <span class="text-[#0A3A67] font-semibold">
-                                {{ $item['name'] }}
-                            </span>
+                            <div class="flex items-center gap-4">
+
+                                <div class="w-8 h-8 rounded-full bg-[#EEF4FF] text-[#0A3A67] flex items-center justify-center font-bold text-xs">
+                                    {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
+                                </div>
+
+                                <div>
+
+                                    <div class="font-bold text-[#0A3A67] uppercase">
+                                        {{ $word }}
+                                    </div>
+
+                                    <div class="text-xs text-gray-400">
+                                        Keyword caption Instagram
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="bg-[#F4F7FA] px-3 py-1 rounded-full text-xs font-bold text-[#0A3A67]">
+                                {{ $count }}
+                            </div>
+
                         </div>
 
-                        <span class="bg-gray-100 px-3 py-1 rounded-full text-gray-600 text-xs">
-                            {{ $item['count'] }}
-                        </span>
+                    @endforeach
 
-                    </div>
-                @endforeach
+                @else
 
-            </div>
+                    <p class="text-gray-400">
+                        Tidak ada data keyword
+                    </p>
 
-            <div class="mt-6 text-center">
-                <a href="{{ route('detail.keyword') }}"
-                class="inline-block border border-dashed border-gray-300 px-4 py-2 rounded-full text-sm text-gray-500 hover:bg-gray-50 transition">
-                    Lihat Dataset Lengkap
-                </a>
+                @endif
+
             </div>
 
         </div>
@@ -153,41 +236,46 @@
 
 </section>
 
-<!-- BOTTOM SECTION -->
+
+
 <section class="grid lg:grid-cols-2 gap-10 items-center">
 
-    <!-- IMAGE -->
     <div class="relative rounded-[28px] overflow-hidden shadow-md">
 
-           <img src="{{ asset('storage/kalimas.png') }}" 
-               alt="Sungai Kalimas"
-               class="w-full h-full object-cover pointer-events-none">
+        <img
+            src="{{ asset('storage/kalimas.png') }}"
+            alt="Sungai Surabaya"
+            class="w-full h-[360px] object-cover"
+        >
 
-           <div class="absolute inset-0 bg-gradient-to-t from-[#0A3A67]/90 to-transparent pointer-events-none"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0A3A67]/90 to-transparent"></div>
 
         <div class="absolute bottom-6 left-6 text-white">
+
             <div class="text-xs uppercase tracking-widest text-gray-300">
                 Focus Area
             </div>
+
             <div class="text-xl font-bold">
                 Sungai Surabaya & Kalimas
             </div>
+
         </div>
 
     </div>
 
-    <!-- TEXT -->
+
     <div>
 
         <h2 class="text-[30px] font-extrabold text-[#0A3A67] mb-4">
-            Membaca Krisis dari Balik Caption Media Sosial.
+            Membaca Isu Lingkungan dari Caption Media Sosial
         </h2>
 
         <p class="text-gray-500 leading-8">
-            Data menunjukkan dominasi narasi "Sampah" dan "Plastik" yang konsisten. 
-            Hal ini mencerminkan urgensi isu polusi yang menjadi perhatian utama bagi komunitas 
-            <span class="text-green-600">@pedulisungaisurabaya</span> dan 
-            <span class="text-green-600">@ecoton</span> dalam setahun terakhir.
+
+            Keyword dominan diperoleh langsung dari caption postingan Instagram setelah proses filtering stopwords.
+            Hasil analisis menunjukkan masyarakat banyak membahas isu sungai, sampah, pencemaran, limbah, banjir, dan lingkungan.
+
         </p>
 
     </div>
