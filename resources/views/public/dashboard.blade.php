@@ -189,9 +189,9 @@
 <section class="grid xl:grid-cols-[1.15fr_.95fr] gap-8 items-center">
 
     <div class="relative min-h-[320px] rounded-[34px] overflow-hidden">
-        <img src="{{ asset('storage/visual.png') }}" alt="visual report" class="absolute inset-0 w-full h-full object-cover object-center">
+        <img src="{{ asset('storage/visual.png') }}" alt="visual report" class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none">
 
-        <div class="absolute inset-0 bg-gradient-to-r from-[#063A67]/95 via-[#063A67]/70 to-[#063A67]/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#063A67]/95 via-[#063A67]/70 to-[#063A67]/20 pointer-events-none"></div>
 
         <div class="absolute left-6 sm:left-8 bottom-6 sm:bottom-8 z-10 max-w-[520px] text-white pr-6">
             <div class="inline-flex bg-[#7A4B15] px-4 py-2 rounded-full text-xs sm:text-sm uppercase tracking-[.22em] font-black mb-5">

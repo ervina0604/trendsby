@@ -141,9 +141,10 @@
             </div>
 
             <div class="mt-6 text-center">
-                <button class="border border-dashed border-gray-300 px-4 py-2 rounded-full text-sm text-gray-500 hover:bg-gray-50">
+                <a href="{{ route('detail.keyword') }}"
+                class="inline-block border border-dashed border-gray-300 px-4 py-2 rounded-full text-sm text-gray-500 hover:bg-gray-50 transition">
                     Lihat Dataset Lengkap
-                </button>
+                </a>
             </div>
 
         </div>
@@ -158,11 +159,11 @@
     <!-- IMAGE -->
     <div class="relative rounded-[28px] overflow-hidden shadow-md">
 
-        <img src="{{ asset('storage/kalimas.png') }}" 
-             alt="Sungai Kalimas"
-             class="w-full h-full object-cover">
+           <img src="{{ asset('storage/kalimas.png') }}" 
+               alt="Sungai Kalimas"
+               class="w-full h-full object-cover pointer-events-none">
 
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0A3A67]/90 to-transparent"></div>
+           <div class="absolute inset-0 bg-gradient-to-t from-[#0A3A67]/90 to-transparent pointer-events-none"></div>
 
         <div class="absolute bottom-6 left-6 text-white">
             <div class="text-xs uppercase tracking-widest text-gray-300">

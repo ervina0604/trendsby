@@ -13,9 +13,17 @@ Route::get('/hashtag', function () {
     return view('public.hashtag');
 })->name('hashtag');
 
+Route::get('/detail-hashtag', function () {
+    return view('public.detail_hashtag');
+})->name('detail.hashtag');
+
 Route::get('/keyword', function () {
     return view('public.keyword');
 })->name('keyword');
+
+Route::get('/detail-keyword', function () {
+    return view('public.detail_keyword');
+})->name('detail.keyword');
 
 Route::get('/tentang', function () {
     return view('public.tentang');

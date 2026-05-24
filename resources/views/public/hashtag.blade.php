@@ -1,223 +1,287 @@
 @extends('layouts.app')
 
-@section('title','Hashtag')
-
-@php
-    $summaryCards = [
-        [
-            'label' => 'Hashtag Terpopuler',
-            'value' => '#sungaisurabaya',
-            'desc'  => '↗ Dominasi 42% Konten',
-            'style' => 'border-l-4 border-[#2E9F43]',
-        ],
-        [
-            'label' => 'Keyword Dominan',
-            'value' => '"sampah"',
-            'desc'  => '✱ Urgensi Lingkungan Tinggi',
-            'style' => '',
-        ],
-    ];
-
-    $timeline = [
-        '2 Hari Lalu' => [
-            ['tag' => '#surabaya', 'count' => '420 posts', 'active' => true],
-            ['tag' => '#kuliner', 'count' => '315 posts', 'active' => false],
-        ],
-        '1 Hari Lalu' => [
-            ['tag' => '#eventsurabaya', 'count' => '580 posts', 'active' => true],
-            ['tag' => '#sungaisurabaya', 'count' => '510 posts', 'active' => true],
-        ],
-        'Hari Ini' => [
-            ['tag' => '#limbahplastik', 'count' => '720 posts', 'primary' => true],
-            ['tag' => '#pencemaran', 'count' => '440 posts', 'active' => true],
-        ],
-    ];
-@endphp
+@section('title','Hashtag Populer')
 
 @section('content')
 
-<section class="mb-14">
-    <div class="inline-flex items-center gap-2 bg-[#A6F18F] text-[#103A14] text-xs sm:text-sm font-extrabold px-4 py-2 rounded-full mb-8 uppercase tracking-[.18em]">
-        <span class="w-2.5 h-2.5 rounded-full bg-[#103A14]"></span>
-        Live Analytics
-    </div>
+<div class="space-y-8">
 
-    <div class="max-w-5xl">
-        <h1 class="text-[40px] sm:text-[52px] xl:text-[64px] leading-[1.05] font-extrabold text-[#083B6E] mb-5">
-            Tren Konten Instagram Sungai Surabaya
-        </h1>
+    <!-- Header -->
+    <section class="grid lg:grid-cols-[1.4fr_.5fr] gap-6 items-start">
 
-        <p class="text-lg sm:text-2xl leading-8 sm:leading-10 text-slate-600 max-w-3xl">
-            Ringkasan analisis hashtag, keyword, dan tren posting dari akun Peduli Sungai Surabaya dan Ecoton.
-        </p>
-    </div>
-</section>
-
-<section class="grid xl:grid-cols-[1fr_1fr_1.05fr] gap-6 mb-8">
-
-    @foreach($summaryCards as $card)
-        <div class="glass-card min-h-[180px] p-7 sm:p-8 relative overflow-hidden {{ $card['style'] }}">
-            <div class="text-[11px] sm:text-sm uppercase tracking-[.22em] font-black text-slate-500 mb-4">
-                {{ $card['label'] }}
-            </div>
-
-            <div class="text-[34px] sm:text-[46px] xl:text-[52px] leading-none font-extrabold text-[#083B6E] mb-3 break-words">
-                {{ $card['value'] }}
-            </div>
-
-            <div class="text-[#2E9F43] font-bold text-sm sm:text-base">
-                {{ $card['desc'] }}
-            </div>
-
-            @if($loop->first)
-                <div class="absolute right-5 bottom-[-16px] text-[120px] sm:text-[150px] font-black text-slate-100">#</div>
-            @else
-                <div class="absolute right-6 bottom-6 grid grid-cols-3 gap-2 opacity-10">
-                    @for($i = 0; $i < 12; $i++)
-                        <div class="w-4 h-4 sm:w-5 sm:h-5 bg-slate-500 rounded-sm"></div>
-                    @endfor
-                </div>
-            @endif
-        </div>
-    @endforeach
-
-    <div class="rounded-[30px] bg-[#063A67] text-white min-h-[180px] p-8 relative overflow-hidden flex flex-col justify-between">
         <div>
-            <div class="text-[11px] sm:text-sm uppercase tracking-[.22em] font-black text-[#79A9D1] mb-4">
-                Periode Tertinggi
+            <div class="inline-flex items-center gap-2 bg-[#A6F18F] text-[#103A14] text-xs font-bold px-4 py-2 rounded-full uppercase tracking-[.18em] mb-6">
+                <span class="w-2 h-2 rounded-full bg-[#103A14]"></span>
+                Data Unggulan
             </div>
 
-            <h2 class="text-[32px] sm:text-[38px] xl:text-[42px] leading-tight font-extrabold max-w-sm">
-                Minggu ke-2 Maret 2026
-            </h2>
+            <h1 class="text-[42px] font-extrabold text-[#083B6E] leading-tight mb-4">
+                Hashtag Populer
+            </h1>
+
+            <p class="text-slate-500 text-lg leading-8 max-w-3xl">
+                Analisis frekuensi tag terkait Sungai Surabaya berdasarkan pemantauan media sosial dan komunikasi publik.
+            </p>
         </div>
 
-        <div class="text-[#9CE38C] font-bold text-sm sm:text-base">
-            ▣ Puncak Kampanye Clean-up
-        </div>
-
-        <div class="absolute right-5 bottom-2 text-[100px] opacity-10">⌁</div>
-    </div>
-
-</section>
-
-<section class="grid xl:grid-cols-[1.8fr_.9fr] gap-6 mb-12 items-stretch">
-
-    <div class="glass-card p-5 sm:p-7 min-h-[640px] flex flex-col">
-
-        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-5 mb-8">
-            <div class="flex flex-wrap gap-3">
-                <button class="bg-[#063A67] text-white px-6 py-3 rounded-full font-bold shadow-md text-sm sm:text-base">Timeline</button>
-                <button class="text-[#083B6E] px-4 py-3 font-bold text-sm sm:text-base">Tag Cloud</button>
-                <button class="text-[#083B6E] px-4 py-3 font-bold text-sm sm:text-base">Ranking Table</button>
+        <!-- Total Mention -->
+        <div class="glass-card p-6 min-h-[140px] flex flex-col justify-center items-end">
+            <div class="text-xs uppercase tracking-[.2em] text-slate-400 font-bold mb-3">
+                Total Mentions
             </div>
 
-            <div class="bg-slate-100 rounded-full p-1 flex w-fit">
-                <button class="bg-white px-5 py-2 rounded-full font-bold text-sm shadow">Mingguan</button>
-                <button class="px-5 py-2 rounded-full text-sm font-bold text-slate-500">Bulanan</button>
+            <div class="text-[48px] font-extrabold text-[#083B6E] leading-none">
+                1,284
             </div>
         </div>
 
-        <div class="bg-slate-50 rounded-[28px] h-[300px] sm:h-[340px] px-5 sm:px-8 pb-6 flex items-end gap-2 sm:gap-3 relative overflow-hidden mb-8">
-            <div class="bg-[#A6EA9D] h-[30%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#A6EA9D] h-[52%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#A6EA9D] h-[42%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#0B5B94] h-[70%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#A6EA9D] h-[48%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#A6EA9D] h-[58%] w-full rounded-t-[24px]"></div>
-            <div class="bg-[#A6EA9D] h-[72%] w-full rounded-t-[24px]"></div>
+    </section>
 
-            <div class="absolute inset-0 flex items-center justify-center text-[#5F8AAE] text-lg sm:text-3xl font-extrabold opacity-70 pointer-events-none text-center px-4">
-                POST TREND ANALYSIS
+    <!-- Content -->
+    <section class="grid lg:grid-cols-[1.4fr_.65fr] gap-6">
+
+        <!-- Word Cloud -->
+        <div class="glass-card p-7">
+
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="font-bold text-[#083B6E] text-lg">
+                    Visualisasi Awan Kata
+                </h2>
+
+                <span class="text-slate-400 text-sm">ⓘ</span>
             </div>
-        </div>
 
-        <div class="grid md:grid-cols-3 gap-5 mt-auto">
-            @foreach($timeline as $period => $items)
-                <div>
-                    <div class="text-xs uppercase tracking-[.22em] mb-3 font-black {{ $period === 'Hari Ini' ? 'text-[#2E9F43]' : 'text-slate-400' }}">
-                        {{ $period }}
-                    </div>
+            <div class="min-h-[280px] flex flex-col items-center justify-center text-center space-y-6">
 
-                    <div class="space-y-3">
-                        @foreach($items as $item)
-                            <div class="rounded-2xl p-4 transition hover:-translate-y-1 hover:shadow-md {{ !empty($item['primary']) ? 'bg-[#063A67] text-white' : 'bg-white border border-slate-200 text-[#083B6E]' }} {{ !empty($item['active']) ? 'border-l-4 border-[#2E9F43]' : '' }}">
-                                <div class="font-extrabold text-sm sm:text-base break-words">{{ $item['tag'] }}</div>
-                                <div class="text-sm mt-1 {{ !empty($item['primary']) ? 'text-slate-300' : 'text-slate-400' }}">
-                                    {{ $item['count'] }}
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
+                <div class="text-[56px] font-extrabold text-[#083B6E]">
+                    #sungaisurabaya
                 </div>
-            @endforeach
+
+                <div class="flex flex-wrap justify-center gap-4 text-[18px] font-bold">
+
+                    <span class="text-[#2E9F43]">
+                        #pedulisungai
+                    </span>
+
+                    <span class="text-[#0B5B94]">
+                        #ecoton
+                    </span>
+
+                    <span class="text-[#A16207]">
+                        #pencemaran
+                    </span>
+
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 text-[20px] font-extrabold">
+
+                    <span class="text-[#2E9F43]">
+                        #plastik
+                    </span>
+
+                    <span class="text-[#083B6E]">
+                        #aksibersih
+                    </span>
+
+                    <span class="text-slate-400 text-sm">
+                        #surabayasehat
+                    </span>
+
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 items-end">
+
+                    <span class="text-slate-300 text-sm">
+                        #kurangiplastik
+                    </span>
+
+                    <span class="text-[#7AD66A] text-[34px] font-extrabold">
+                        #sungailestari
+                    </span>
+
+                </div>
+
+            </div>
+
         </div>
 
-    </div>
+        <!-- Highlight -->
+        <div class="rounded-[28px] bg-[#063A67] text-white p-7 flex flex-col justify-between min-h-[280px]">
 
-    <div class="glass-card min-h-[640px] p-7 sm:p-8 flex flex-col justify-center">
-        <h2 class="text-[30px] sm:text-[38px] font-extrabold text-[#083B6E] mb-10 leading-tight">
-            Visual Keyword Cloud
-        </h2>
+            <div>
+                <div class="uppercase tracking-[.2em] text-xs font-bold text-[#8FB9DB] mb-5">
+                    Sorotan Mingguan
+                </div>
 
-        <div class="flex flex-col gap-7 items-center text-center">
-            <div class="text-[36px] sm:text-[54px] font-extrabold text-[#083B6E] leading-none break-words">
-                #sungaisurabaya
+                <p class="leading-8 text-slate-200">
+                    Tagar #sungaisurabaya mengalami peningkatan sebesar 18% dalam 7 hari terakhir didorong oleh kampanye pemerhati lingkungan.
+                </p>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-3 sm:gap-5 items-end">
-                <span class="bg-[#D8F4D1] text-[#2E7D32] px-4 py-2 rounded-full text-lg sm:text-2xl font-bold">sampah</span>
-                <span class="text-[#8B4E0E] text-2xl sm:text-4xl font-extrabold">limbah</span>
-            </div>
+            <button class="bg-[#0B5B94] hover:bg-[#0F6CAD] transition px-5 py-3 rounded-full text-sm font-bold w-fit">
+                ↗ Trend Meningkat
+            </button>
 
-            <div class="flex flex-wrap justify-center gap-3 sm:gap-5 text-slate-500 font-semibold items-end">
-                <span class="text-lg sm:text-3xl">pencemaran</span>
-                <span class="text-[#083B6E] text-2xl sm:text-4xl font-extrabold">plastik</span>
-                <span class="text-red-500 text-lg sm:text-2xl">banjir</span>
-            </div>
-
-            <div class="flex flex-wrap justify-center gap-3 sm:gap-5 items-end">
-                <span class="text-[#2E7D32] text-2xl sm:text-4xl font-extrabold">Ecoton</span>
-                <span class="text-[#0B5B94] text-xl sm:text-3xl font-extrabold">mikroplastik</span>
-                <span class="text-slate-400 text-base sm:text-2xl">air bersih</span>
-            </div>
         </div>
-    </div>
 
-</section>
+    </section>
 
-<section class="grid xl:grid-cols-[1.15fr_.95fr] gap-8 items-center">
+    <!-- Ranking -->
+    <section class="glass-card p-7">
 
-    <div class="relative min-h-[320px] rounded-[34px] overflow-hidden">
-        <img src="{{ asset('storage/visual.png') }}" alt="visual report" class="absolute inset-0 w-full h-full object-cover object-center">
-
-        <div class="absolute inset-0 bg-gradient-to-r from-[#063A67]/95 via-[#063A67]/70 to-[#063A67]/20"></div>
-
-        <div class="absolute left-6 sm:left-8 bottom-6 sm:bottom-8 z-10 max-w-[520px] text-white pr-6">
-            <div class="inline-flex bg-[#7A4B15] px-4 py-2 rounded-full text-xs sm:text-sm uppercase tracking-[.22em] font-black mb-5">
-                Laporan Terkini
-            </div>
-
-            <h2 class="text-[30px] sm:text-[42px] leading-tight font-extrabold">
-                Analisis Visual Dampak Pencemaran terhadap Volume Konten Edukasi.
+        <div class="mb-6">
+            <h2 class="text-[28px] font-extrabold text-[#083B6E]">
+                Tabel Ranking Hashtag
             </h2>
-        </div>
-    </div>
 
-    <div class="space-y-6">
-        <div class="text-[#2E7D32] uppercase tracking-[.35em] text-xs sm:text-sm font-black">
-            Data Insight
+            <p class="text-slate-400 text-sm mt-2">
+                Data populer per tanggal 24 Mei 2026
+            </p>
         </div>
 
-        <h2 class="text-[32px] sm:text-[46px] leading-tight font-extrabold text-[#083B6E] max-w-xl">
-            Kampanye digital meningkat 3x lipat selama periode banjir di hulu sungai.
-        </h2>
+        <div class="overflow-hidden rounded-2xl border border-slate-100">
 
-        <div class="bg-slate-100 rounded-[28px] p-6 sm:p-8 border-l-4 border-[#083B6E] text-slate-600 text-lg sm:text-2xl leading-8 sm:leading-10 shadow-sm">
-            “Pola keyword 'plastik' dan 'limbah' memiliki korelasi 89% dengan laporan publik di akun Peduli Sungai Surabaya.”
+            <table class="w-full">
+
+                <thead class="bg-slate-50 text-slate-400 text-xs uppercase tracking-[.2em]">
+                    <tr>
+                        <th class="px-6 py-5 text-left">Rank</th>
+                        <th class="px-6 py-5 text-left">Hashtag</th>
+                        <th class="px-6 py-5 text-left">Trend</th>
+                        <th class="px-6 py-5 text-right">Jumlah Kemunculan</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-slate-100 text-sm">
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-5">
+                            <div class="w-7 h-7 rounded-full bg-[#083B6E] text-white text-xs font-bold flex items-center justify-center">
+                                1
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-5 font-bold text-[#083B6E]">
+                            #sungaisurabaya
+                        </td>
+
+                        <td class="px-6 py-5 text-[#2E9F43] font-bold">
+                            ↗ +12%
+                        </td>
+
+                        <td class="px-6 py-5 text-right font-extrabold text-[#083B6E]">
+                            38
+                        </td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-5">
+                            <div class="w-7 h-7 rounded-full bg-[#2E9F43] text-white text-xs font-bold flex items-center justify-center">
+                                2
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-5 font-bold text-[#083B6E]">
+                            #pedulisungai
+                        </td>
+
+                        <td class="px-6 py-5 text-slate-400 font-bold">
+                            → Stabil
+                        </td>
+
+                        <td class="px-6 py-5 text-right font-extrabold text-[#083B6E]">
+                            25
+                        </td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-5">
+                            <div class="w-7 h-7 rounded-full bg-[#65A765] text-white text-xs font-bold flex items-center justify-center">
+                                3
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-5 font-bold text-[#083B6E]">
+                            #ecoton
+                        </td>
+
+                        <td class="px-6 py-5 text-[#2E9F43] font-bold">
+                            ↗ +4%
+                        </td>
+
+                        <td class="px-6 py-5 text-right font-extrabold text-[#083B6E]">
+                            20
+                        </td>
+                    </tr>
+
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-5">
+                            <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-500 text-xs font-bold flex items-center justify-center">
+                                4
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-5 font-bold text-[#083B6E]">
+                            #plastik
+                        </td>
+
+                        <td class="px-6 py-5 text-red-400 font-bold">
+                            ↘ -2%
+                        </td>
+
+                        <td class="px-6 py-5 text-right font-extrabold text-[#083B6E]">
+                            18
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
-    </div>
 
-</section>
+        <div class="mt-6">
+            <a href="{{ route('detail.hashtag') }}"
+            class="w-full block text-center border border-slate-200 rounded-full py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition">
+            Lihat Dataset Lengkap
+            </a>
+        </div>
+
+    </section>
+
+    <!-- Bottom Cards -->
+    <section class="grid md:grid-cols-2 gap-6">
+
+        <div class="glass-card p-7">
+            <div class="text-[#2E9F43] text-2xl mb-4">
+                ⊕
+            </div>
+
+            <h3 class="font-bold text-[#083B6E] text-lg mb-3">
+                Analisis Sentimen
+            </h3>
+
+            <p class="text-slate-500 leading-7">
+                Tagar yang paling sering muncul berkorelasi erat dengan isu pencemaran sungai lokal.
+            </p>
+        </div>
+
+        <div class="glass-card p-7">
+            <div class="text-[#2E9F43] text-2xl mb-4">
+                ↗
+            </div>
+
+            <h3 class="font-bold text-[#083B6E] text-lg mb-3">
+                Jangkauan Publik
+            </h3>
+
+            <p class="text-slate-500 leading-7">
+                Distribusi mention mencapai lebih dari 58.000 impresi melalui kolaborasi komunitas lokal.
+            </p>
+        </div>
+
+    </section>
+
+</div>
 
 @endsection
