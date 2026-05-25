@@ -67,17 +67,6 @@
 
         </div>
 
-        {{-- Search --}}
-        <div class="relative hidden md:block shrink-0">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-                search
-            </span>
-            <input
-                type="text"
-                placeholder="Cari tren..."
-                class="w-56 h-11 rounded-full bg-slate-100 border-0 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
-            >
-        </div>
 
     </div>
 </nav>

@@ -10,7 +10,7 @@
     <section class="relative overflow-hidden rounded-[34px] min-h-[500px] flex items-center px-10 py-16">
 
         <!-- Background -->
-        <img src="{{ asset('storage/about-bg.png') }}"
+        <img src="{{ asset('storage/hero.png') }}"
              alt="Tentang SuraTrend"
              class="absolute inset-0 w-full h-full object-cover">
 
