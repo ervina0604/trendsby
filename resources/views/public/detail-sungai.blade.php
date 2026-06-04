@@ -1,184 +1,308 @@
 @extends('layouts.app')
 
-@section('title',$sungai['nama'])
+@section('title', $sungai['nama'])
 
 @section('content')
 
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
 <section>
 
-<div class="relative">
+    {{-- HERO --}}
+    <div class="relative">
 
-<img src="{{ asset($sungai['foto']) }}"
-     class="w-full h-[520px] object-cover">
+        <img
+            src="{{ asset($sungai['foto']) }}"
+            class="w-full h-[550px] object-cover">
 
-<div class="absolute inset-0 bg-black/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
 
-<div class="absolute bottom-12 left-12 text-white">
+        <div class="absolute bottom-12 left-12 text-white">
 
-<h1 class="text-6xl font-black">
-    {{ $sungai['nama'] }}
-</h1>
+            <span class="bg-yellow-500 px-5 py-2 rounded-full font-semibold">
+                {{ $sungai['status'] }}
+            </span>
 
-<p class="mt-3 text-xl">
-    Surabaya, Jawa Timur
-</p>
+            <h1 class="text-7xl font-black mt-4">
+                {{ $sungai['nama'] }}
+            </h1>
 
-</div>
+            <p class="text-xl mt-2 opacity-90">
+                {{ $sungai['lokasi'] }}
+            </p>
 
-</div>
+        </div>
 
-<div class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
+    </div>
 
-<div class="grid md:grid-cols-4 gap-6">
+    <div class="max-w-7xl mx-auto px-6 -mt-16 relative z-20">
 
-<div class="bg-white rounded-3xl p-6 shadow">
+        {{-- INFO CARD --}}
+        <div class="grid md:grid-cols-3 gap-6">
 
-<p class="text-gray-500 text-sm">
-SKOR
-</p>
+            <div class="bg-white rounded-3xl p-6 shadow-lg">
 
-<h3 class="text-5xl font-black text-[#04543D] mt-3">
-{{ $sungai['skor'] }}
-</h3>
+                <div class="text-gray-500 text-sm">
+                    STATUS ANALISIS
+                </div>
 
-</div>
+                <div class="text-3xl font-bold text-yellow-600 mt-3">
+                    {{ $sungai['status'] }}
+                </div>
 
-<div class="bg-white rounded-3xl p-6 shadow">
+            </div>
 
-<p class="text-gray-500 text-sm">
-DOKUMENTASI
-</p>
+            <div class="bg-white rounded-3xl p-6 shadow-lg">
 
-<h3 class="text-5xl font-black">
-{{ $sungai['dokumentasi'] }}
-</h3>
+                <div class="text-gray-500 text-sm">
+                    KOORDINAT
+                </div>
 
-</div>
+                <div class="font-bold mt-3">
+                    {{ $sungai['lat'] }},
+                    {{ $sungai['lng'] }}
+                </div>
 
-<div class="bg-white rounded-3xl p-6 shadow">
+            </div>
 
-<p class="text-gray-500 text-sm">
-PEMBAHASAN
-</p>
+            <div class="bg-white rounded-3xl p-6 shadow-lg">
 
-<h3 class="text-5xl font-black">
-{{ $sungai['pembahasan'] }}
-</h3>
+                <div class="text-gray-500 text-sm">
+                    KATEGORI DATA
+                </div>
 
-</div>
+                <div class="font-bold mt-3 text-[#04543D]">
+                    Data Sungai Surabaya
+                </div>
 
-<div class="bg-white rounded-3xl p-6 shadow">
+            </div>
 
-<p class="text-gray-500 text-sm">
-PRIORITAS
-</p>
+        </div>
 
-<h3 class="text-5xl font-black text-red-600">
-{{ $sungai['prioritas'] }}
-</h3>
+        {{-- CONTENT --}}
+        <div class="grid lg:grid-cols-[1fr_420px] gap-8 mt-10">
 
-</div>
+            {{-- LEFT --}}
+            <div class="space-y-8">
 
-</div>
+                <div class="bg-white rounded-3xl shadow-lg p-8">
 
-<div class="grid lg:grid-cols-[1fr_400px] gap-8 mt-10">
+                    <h2 class="text-3xl font-bold text-[#04543D]">
+                        Deskripsi Sungai
+                    </h2>
 
-<div class="bg-white rounded-3xl shadow p-8">
+                    <p class="text-gray-600 mt-6 leading-relaxed text-lg">
+                        {{ $sungai['deskripsi'] }}
+                    </p>
 
-<h2 class="text-3xl font-bold text-[#04543D]">
-Ringkasan Ekosistem
-</h2>
+                </div>
 
-<hr class="my-5">
+                <div class="bg-gradient-to-r from-[#04543D] to-[#0f766e] rounded-3xl p-8 text-white">
 
-<div class="grid md:grid-cols-2 gap-8">
+                    <h2 class="text-3xl font-bold">
+                        Insight AI
+                    </h2>
 
-<div>
+                    <p class="mt-5 leading-relaxed">
 
-<div class="text-gray-500 text-sm">
-LOKASI UTAMA
-</div>
+                        Data media sosial dan hasil scraping untuk
+                        <b>{{ $sungai['nama'] }}</b>
+                        masih dalam proses pengumpulan.
 
-<div class="font-semibold text-xl">
-{{ $sungai['lokasi'] }}
-</div>
+                        Setelah proses analisis SAW dan klasifikasi selesai,
+                        sistem akan menampilkan skor prioritas, tren pembahasan,
+                        tingkat pencemaran, serta rekomendasi penanganan otomatis.
 
-</div>
+                    </p>
 
-<div>
+                </div>
 
-<div class="text-gray-500 text-sm">
-LUAS DAERAH ALIRAN
-</div>
+                <div class="bg-white rounded-3xl shadow-lg p-8">
 
-<div class="font-semibold text-xl">
-{{ $sungai['luas'] }}
-</div>
+                    <h2 class="text-3xl font-bold text-[#04543D]">
+                        Informasi Monitoring
+                    </h2>
 
-</div>
+                    <div class="mt-6 space-y-4">
 
-<div>
+                        <div class="flex justify-between">
+                            <span>Dokumentasi Tersimpan</span>
+                            <span class="font-bold">Menunggu Scraping</span>
+                        </div>
 
-<div class="text-gray-500 text-sm">
-PANJANG ALIRAN
-</div>
+                        <div class="flex justify-between">
+                            <span>Pembahasan Media Sosial</span>
+                            <span class="font-bold">Menunggu Analisis</span>
+                        </div>
 
-<div class="font-semibold text-xl">
-{{ $sungai['panjang'] }}
-</div>
+                        <div class="flex justify-between">
+                            <span>Priority Score</span>
+                            <span class="font-bold text-yellow-600">
+                                Belum Tersedia
+                            </span>
+                        </div>
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-<div>
+            {{-- RIGHT --}}
+            <div class="space-y-8">
 
-<div id="map"
-     class="h-[420px] rounded-3xl overflow-hidden shadow">
-</div>
+                <div class="bg-white rounded-3xl p-5 shadow-lg">
 
-</div>
+                    <div
+                        id="map"
+                        class="h-[400px] rounded-2xl">
+                    </div>
 
-</div>
+                </div>
 
-<h2 class="text-4xl font-bold mt-16 mb-8">
-Dokumentasi Terkini
-</h2>
+                <div class="bg-white rounded-3xl p-8 shadow-lg">
 
-<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                    <h3 class="text-2xl font-bold text-[#04543D]">
+                        Detail Lokasi
+                    </h3>
 
-@for($i=1;$i<=5;$i++)
+                    <div class="mt-6 space-y-5">
 
-<img src="https://picsum.photos/400/300?random={{ $i }}"
-     class="rounded-2xl h-56 w-full object-cover">
+                        <div>
+                            <div class="text-gray-500 text-sm">
+                                Nama Sungai
+                            </div>
 
-@endfor
+                            <div class="font-semibold">
+                                {{ $sungai['nama'] }}
+                            </div>
+                        </div>
 
-</div>
+                        <div>
+                            <div class="text-gray-500 text-sm">
+                                Wilayah
+                            </div>
 
-</div>
+                            <div class="font-semibold">
+                                {{ $sungai['lokasi'] }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-gray-500 text-sm">
+                                Latitude
+                            </div>
+
+                            <div class="font-semibold">
+                                {{ $sungai['lat'] }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-gray-500 text-sm">
+                                Longitude
+                            </div>
+
+                            <div class="font-semibold">
+                                {{ $sungai['lng'] }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {{-- GALLERY --}}
+        <h2 class="text-4xl font-bold mt-16 mb-8 text-[#04543D]">
+            Dokumentasi
+        </h2>
+
+        <div class="bg-white rounded-3xl shadow-lg p-12 text-center">
+
+            <div class="text-6xl mb-4">
+                📷
+            </div>
+
+            <h3 class="text-2xl font-bold">
+                Dokumentasi Belum Tersedia
+            </h3>
+
+            <p class="text-gray-500 mt-3">
+                Dokumentasi akan muncul otomatis setelah proses scraping selesai.
+            </p>
+
+        </div>
+
+        <div class="flex justify-between mt-12 mb-20">
+
+            <a
+                href="{{ route('peta') }}"
+                class="bg-gray-200 px-8 py-4 rounded-xl font-semibold">
+
+                ← Kembali ke Peta
+
+            </a>
+
+            <a
+                href="{{ route('prioritas') }}"
+                class="bg-[#04543D] text-white px-8 py-4 rounded-xl font-semibold">
+
+                Lihat Prioritas →
+
+            </a>
+
+        </div>
+
+    </div>
 
 </section>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
-const map = L.map('map').setView([-7.2575,112.7521],12);
+const map = L.map('map').setView(
+[
+    {{ $sungai['lat'] }},
+    {{ $sungai['lng'] }}
+],
+13
+);
 
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 ).addTo(map);
 
-L.marker([-7.2575,112.7521])
+L.marker(
+[
+    {{ $sungai['lat'] }},
+    {{ $sungai['lng'] }}
+]
+)
 .addTo(map)
-.bindPopup('{{ $sungai["nama"] }}')
+.bindPopup(`
+<b>{{ $sungai['nama'] }}</b><br>
+{{ $sungai['lokasi'] }}
+`)
 .openPopup();
+
+L.circle(
+[
+    {{ $sungai['lat'] }},
+    {{ $sungai['lng'] }}
+],
+{
+    radius:1000,
+    color:'#04543D',
+    fillColor:'#04543D',
+    fillOpacity:0.15
+}
+).addTo(map);
 
 </script>
 
