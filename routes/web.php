@@ -7,7 +7,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/peta', function () {
-    return view('peta');
+    return view('public.peta');
 })->name('peta');
 
 Route::get('/sungai/{slug}', function ($slug) {
