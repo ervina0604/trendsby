@@ -71,7 +71,8 @@ $top = $sungai[0];
 
             <img
                 id="heroImage"
-                src="{{ asset('images/sungai.png') }}"
+                src="{{ asset('storage/sungai.png') }}"
+                alt="Sungai Surabaya"
                 class="w-full h-full object-cover">
 
             <div class="p-8">
@@ -141,7 +142,7 @@ $top = $sungai[0];
                 <a
                     id="heroButton"
                     href="{{ route('detail.sungai',$top['slug']) }}"
-                    class="block mt-8 bg-[#04543D] text-white text-center py-4 rounded-2xl font-bold hover:bg-[#02392b]">
+                    class="block mt-8 bg-[#04543D] text-white text-center py-4 rounded-2xl font-bold hover:bg-[#02392b] transition">
 
                     Lihat Detail Sungai →
 
@@ -205,81 +206,83 @@ $top = $sungai[0];
                     type="text"
                     id="searchRiver"
                     placeholder="Cari sungai..."
-                    class="w-full border rounded-xl px-4 py-3">
+                    class="w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#04543D]">
 
             </div>
 
-            <table class="w-full">
+            <div class="overflow-x-auto">
 
-                <thead class="bg-gray-100">
+                <table class="w-full min-w-[700px]">
 
-                    <tr>
+                    <thead class="bg-gray-100">
 
-                        <th class="text-left p-5">Rank</th>
-                        <th class="text-left">Nama Sungai</th>
-                        <th class="text-center">Score</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Detail</th>
+                        <tr>
+                            <th class="text-left p-5">Rank</th>
+                            <th class="text-left">Nama Sungai</th>
+                            <th class="text-center">Score</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Detail</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="riverTable">
+
+                    @foreach($sungai as $index => $item)
+
+                    <tr class="border-t hover:bg-gray-50">
+
+                        <td class="p-5">
+                            {{ str_pad($index+1,2,'0',STR_PAD_LEFT) }}
+                        </td>
+
+                        <td class="font-semibold">
+                            {{ $item['nama'] }}
+                        </td>
+
+                        <td class="text-center font-bold">
+                            {{ $item['score'] }}
+                        </td>
+
+                        <td class="text-center">
+
+                            @if($item['status']=='Kritis')
+                                <span class="text-red-600 font-semibold">
+                                    Kritis
+                                </span>
+                            @elseif($item['status']=='Perhatian')
+                                <span class="text-yellow-500 font-semibold">
+                                    Perhatian
+                                </span>
+                            @else
+                                <span class="text-green-600 font-semibold">
+                                    Baik
+                                </span>
+                            @endif
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a
+                                href="{{ route('detail.sungai',$item['slug']) }}"
+                                class="text-[#04543D] font-bold">
+
+                                Detail
+
+                            </a>
+
+                        </td>
 
                     </tr>
 
-                </thead>
+                    @endforeach
 
-                <tbody id="riverTable">
+                    </tbody>
 
-                @foreach($sungai as $index => $item)
+                </table>
 
-                <tr class="border-t hover:bg-gray-50">
-
-                    <td class="p-5">
-                        {{ str_pad($index+1,2,'0',STR_PAD_LEFT) }}
-                    </td>
-
-                    <td class="font-semibold">
-                        {{ $item['nama'] }}
-                    </td>
-
-                    <td class="text-center font-bold">
-                        {{ $item['score'] }}
-                    </td>
-
-                    <td class="text-center">
-
-                        @if($item['status']=='Kritis')
-                            <span class="text-red-600 font-semibold">
-                                Kritis
-                            </span>
-                        @elseif($item['status']=='Perhatian')
-                            <span class="text-yellow-500 font-semibold">
-                                Perhatian
-                            </span>
-                        @else
-                            <span class="text-green-600 font-semibold">
-                                Baik
-                            </span>
-                        @endif
-
-                    </td>
-
-                    <td class="text-center">
-
-                        <a
-                            href="{{ route('detail.sungai',$item['slug']) }}"
-                            class="text-[#04543D] font-bold">
-
-                            Detail
-
-                        </a>
-
-                    </td>
-
-                </tr>
-
-                @endforeach
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
 

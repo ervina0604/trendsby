@@ -70,8 +70,10 @@ Prioritas Sungai
 
 <div>
 
-<img src="{{ asset('images/home-sungai.jpg') }}"
-class="rounded-3xl shadow-xl h-[450px] w-full object-cover">
+<img
+    src="{{ asset('storage/home-sungai.png') }}"
+    alt="Sungai Surabaya"
+    class="rounded-3xl shadow-xl h-[450px] w-full object-cover">
 
 </div>
 

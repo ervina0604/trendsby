@@ -13,7 +13,8 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <div class="relative">
 
         <img
-            src="{{ asset($sungai['foto']) }}"
+            src="{{ asset('storage/'.$sungai['foto']) }}"
+            alt="{{ $sungai['nama'] }}"
             class="w-full h-[550px] object-cover">
 
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
@@ -266,43 +267,49 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <script>
 
-const map = L.map('map').setView(
-[
-    {{ $sungai['lat'] }},
-    {{ $sungai['lng'] }}
-],
-13
-);
+document.addEventListener('DOMContentLoaded', function(){
 
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-).addTo(map);
+    const map = L.map('map').setView(
+    [
+        {{ $sungai['lat'] }},
+        {{ $sungai['lng'] }}
+    ],
+    13
+    );
 
-L.marker(
-[
-    {{ $sungai['lat'] }},
-    {{ $sungai['lng'] }}
-]
-)
-.addTo(map)
-.bindPopup(`
-<b>{{ $sungai['nama'] }}</b><br>
-{{ $sungai['lokasi'] }}
-`)
-.openPopup();
+    L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        attribution:'© OpenStreetMap'
+    }
+    ).addTo(map);
 
-L.circle(
-[
-    {{ $sungai['lat'] }},
-    {{ $sungai['lng'] }}
-],
-{
-    radius:1000,
-    color:'#04543D',
-    fillColor:'#04543D',
-    fillOpacity:0.15
-}
-).addTo(map);
+    L.marker(
+    [
+        {{ $sungai['lat'] }},
+        {{ $sungai['lng'] }}
+    ])
+    .addTo(map)
+    .bindPopup(`
+        <b>{{ $sungai['nama'] }}</b><br>
+        {{ $sungai['lokasi'] }}
+    `)
+    .openPopup();
+
+    L.circle(
+    [
+        {{ $sungai['lat'] }},
+        {{ $sungai['lng'] }}
+    ],
+    {
+        radius:1000,
+        color:'#04543D',
+        fillColor:'#04543D',
+        fillOpacity:0.15
+    }
+    ).addTo(map);
+
+});
 
 </script>
 

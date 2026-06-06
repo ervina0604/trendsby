@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+
         body{
             font-family:'Manrope',sans-serif;
             background:#f4f5f6;
@@ -47,16 +48,24 @@
             border-radius:24px;
             box-shadow:0 4px 20px rgba(0,0,0,.04);
         }
+
     </style>
+
 </head>
 
 <body>
 
 <nav class="fixed top-0 left-0 right-0 bg-white border-b z-50">
+
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
         <a href="{{ route('home') }}" class="flex items-center gap-3">
-            <img src="{{ asset('images/logo.png') }}" class="h-10">
+
+            <img
+                src="{{ asset('storage/logo.png') }}"
+                alt="Logo SuraTrend"
+                class="h-10">
+
         </a>
 
         <div class="hidden md:flex items-center gap-10">
@@ -84,15 +93,20 @@
         </div>
 
         <a href="{{ route('peta') }}"
-           class="bg-[#04543D] hover:bg-[#03432f] text-white px-8 py-3 rounded-full font-semibold">
+           class="bg-[#04543D] hover:bg-[#03432f] text-white px-8 py-3 rounded-full font-semibold transition">
+
             Lihat Peta
+
         </a>
 
     </div>
+
 </nav>
 
 <main class="pt-28">
+
     @yield('content')
+
 </main>
 
 <footer class="mt-24 border-t bg-white">
@@ -100,20 +114,36 @@
     <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between">
 
         <div>
-            <h3 class="font-bold text-3xl text-[#04543D]">
-                SuraTrend
-            </h3>
+
+            <div class="flex items-center gap-3">
+
+                <img
+                    src="{{ asset('storage/logo.png') }}"
+                    alt="Logo SuraTrend"
+                    class="h-8">
+
+                <h3 class="font-bold text-3xl text-[#04543D]">
+                    SuraTrend
+                </h3>
+
+            </div>
 
             <p class="text-gray-500 mt-3">
                 © 2026 SuraTrend Environmental Intelligence.
             </p>
+
         </div>
 
         <div class="flex gap-8 mt-6 md:mt-0 text-sm font-semibold text-gray-500">
+
             <a href="{{ route('home') }}">Home</a>
+
             <a href="{{ route('peta') }}">Peta Sungai</a>
+
             <a href="{{ route('prioritas') }}">Prioritas Sungai</a>
+
             <a href="{{ route('tentang') }}">Tentang</a>
+
         </div>
 
     </div>

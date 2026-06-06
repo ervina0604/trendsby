@@ -67,7 +67,8 @@ Ubah data media sosial menjadi insight yang membantu memahami kondisi dan isu li
 <div>
 
 <img
-src="{{ asset('images/gambar tentang.png') }}"
+src="{{ asset('storage/gambar tentang.png') }}"
+alt="Tentang SuraTrend"
 class="rounded-xl shadow-lg hero-image w-full">
 
 </div>
@@ -76,11 +77,11 @@ class="rounded-xl shadow-lg hero-image w-full">
 
 </section>
 
-
 <section class="bg-[#EEF1F2] py-24 text-center fade-up">
 
 <img
-src="{{ asset('images/misi-icon.png') }}"
+src="{{ asset('storage/misi-icon.png') }}"
+alt="Misi"
 class="mx-auto h-20 mb-8 animate-pulse">
 
 <h2 class="text-5xl font-extrabold text-slate-900 max-w-4xl mx-auto leading-tight">
@@ -93,7 +94,6 @@ class="mx-auto h-20 mb-8 animate-pulse">
 
 </section>
 
-
 <section class="max-w-7xl mx-auto px-6 py-20 fade-up">
 
 <a href="{{ route('peta') }}"
@@ -104,7 +104,8 @@ class="block border rounded-3xl overflow-hidden bg-white hover-card">
 <div class="p-12">
 
 <img
-src="{{ asset('images/peta tentang.png') }}"
+src="{{ asset('storage/peta tentang.png') }}"
+alt="Peta Interaktif"
 class="h-10 mb-6">
 
 <h3 class="text-4xl font-bold">
@@ -129,13 +130,13 @@ Jelajahi Peta →
 </div>
 
 <img
-src="{{ asset('images/suratrend-tentang.png') }}"
+src="{{ asset('storage/suratrend-tentang.png') }}"
+alt="Dashboard SuraTrend"
 class="w-full h-full object-cover">
 
 </div>
 
 </a>
-
 
 <div class="grid md:grid-cols-2 gap-8 mt-8">
 
@@ -143,7 +144,8 @@ class="w-full h-full object-cover">
 class="bg-white border rounded-3xl p-10 hover-card block">
 
 <img
-src="{{ asset('images/rangking.png') }}"
+src="{{ asset('storage/rangking.png') }}"
+alt="Ranking"
 class="h-8 mb-5">
 
 <h3 class="text-3xl font-bold">
@@ -162,13 +164,13 @@ Lihat Ranking →
 
 </a>
 
-
 <div
 onclick="openModal()"
 class="cursor-pointer bg-white border rounded-3xl p-10 hover-card">
 
 <img
-src="{{ asset('images/air.png') }}"
+src="{{ asset('storage/air.png') }}"
+alt="Wawasan"
 class="h-8 mb-5">
 
 <h3 class="text-3xl font-bold">
@@ -190,7 +192,6 @@ Pelajari →
 </div>
 
 </section>
-
 
 <div id="modal"
 class="fixed inset-0 bg-black/50 hidden z-50">
