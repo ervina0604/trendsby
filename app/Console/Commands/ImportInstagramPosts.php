@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Post;
+use App\Models\PostImage;
 use App\Models\RiverLocation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -10,19 +11,10 @@ use Carbon\Carbon;
 
 class ImportInstagramPosts extends Command
 {
-    /**
-     * Nama command
-     */
     protected $signature = 'instagram:import {file}';
 
-    /**
-     * Deskripsi command
-     */
     protected $description = 'Import hasil scraping Instagram JSON ke database';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $filePath = $this->argument('file');
@@ -33,31 +25,41 @@ class ImportInstagramPosts extends Command
         }
 
         $json = File::get($filePath);
-        $posts = json_decode($json, true);
 
-        if (!$posts) {
+        $data = json_decode($json, true);
+
+        if (!$data) {
             $this->error('Format JSON tidak valid.');
             return Command::FAILURE;
         }
 
-        $defaultLocation = RiverLocation::first();
+        $source = str_contains(
+            strtolower($filePath),
+            'pedulisungaisurabaya'
+        )
+            ? 'pedulisungaisurabaya'
+            : 'ecoton';
 
-        foreach ($posts as $item) {
+        $imported = 0;
 
-            Post::updateOrCreate(
+        foreach ($data as $item) {
+
+            $river = $this->detectRiver(
+                $item['caption'] ?? ''
+            );
+
+            $post = Post::updateOrCreate(
                 [
                     'instagram_post_id' => $item['id']
                 ],
                 [
-                    'location_id' => $defaultLocation?->id,
+                    'location_id' => $river['location_id'],
 
                     'caption' => $item['caption'] ?? null,
 
-                    'image_url' => $item['displayUrl'] ?? null,
-
                     'post_url' => $item['url'] ?? null,
 
-                    'username' => 'ecoton',
+                    'username' => $source,
 
                     'likes_count' => $item['likesCount'] ?? 0,
 
@@ -68,12 +70,174 @@ class ImportInstagramPosts extends Command
                         : null,
 
                     'scraped_at' => now(),
+
+                    'is_river_related' => $river['is_river_related'],
+
+                    'detected_river' => $river['detected_river'],
                 ]
             );
+
+            PostImage::where('post_id', $post->id)->delete();
+
+            $localImages = $this->findLocalImages(
+                $item,
+                $source
+            );
+
+            foreach ($localImages as $image) {
+
+                PostImage::create([
+                    'post_id' => $post->id,
+
+                    'image_url' => null,
+
+                    'local_image_path' => $image['path'],
+
+                    'image_order' => $image['order'],
+                ]);
+            }
+
+            $imported++;
         }
 
-        $this->info(count($posts) . ' post berhasil diimport.');
+        $this->info("{$imported} post berhasil diimport.");
 
         return Command::SUCCESS;
+    }
+
+
+    private function detectRiver(?string $caption): array
+    {
+        if (!$caption) {
+            return [
+                'location_id' => null,
+                'is_river_related' => false,
+                'detected_river' => null,
+            ];
+        }
+
+        $caption = strtolower($caption);
+
+        $rivers = RiverLocation::all();
+
+        foreach ($rivers as $river) {
+
+            $riverName = strtolower($river->river_name);
+
+            if (str_contains($caption, $riverName)) {
+
+                return [
+                    'location_id' => $river->id,
+                    'is_river_related' => true,
+                    'detected_river' => $river->river_name,
+                ];
+            }
+
+            $shortName = strtolower(
+                str_replace('sungai ', '', $river->river_name)
+            );
+
+            if (str_contains($caption, $shortName)) {
+
+                return [
+                    'location_id' => $river->id,
+                    'is_river_related' => true,
+                    'detected_river' => $river->river_name,
+                ];
+            }
+        }
+
+        return [
+            'location_id' => null,
+            'is_river_related' => false,
+            'detected_river' => null,
+        ];
+    }
+
+    /**
+     * Cari gambar lokal
+     */
+    private function findLocalImages(
+        array $item,
+        string $source
+    ): array {
+
+        $images = [];
+
+
+
+        if ($source === 'pedulisungaisurabaya') {
+
+            $shortCode = $item['shortCode'] ?? null;
+
+            if (!$shortCode) {
+                return [];
+            }
+
+            $folder = storage_path(
+                'app/raw_images/pedulisungaisurabaya/' .
+                $shortCode
+            );
+
+            if (!is_dir($folder)) {
+                return [];
+            }
+
+            $files = glob(
+                $folder . '/*.{jpg,jpeg,png,webp}',
+                GLOB_BRACE
+            );
+
+            sort($files);
+
+            foreach ($files as $index => $file) {
+
+                $images[] = [
+                    'path' =>
+                        'raw_images/pedulisungaisurabaya/' .
+                        $shortCode .
+                        '/' .
+                        basename($file),
+
+                    'order' => $index + 1,
+                ];
+            }
+
+            return $images;
+        }
+
+
+        $instagramId = $item['id'] ?? null;
+
+        if (!$instagramId) {
+            return [];
+        }
+
+        $folder = storage_path(
+            'app/raw_images/ecoton'
+        );
+
+        if (!is_dir($folder)) {
+            return [];
+        }
+
+        $files = glob(
+            $folder . '/' . $instagramId . '*'
+        );
+
+        sort($files);
+
+        foreach ($files as $index => $file) {
+
+            $images[] = [
+                'path' =>
+                    'raw_images/ecoton/' .
+                    basename($file),
+
+                'order' => $index + 1,
+            ];
+        }
+
+        return $images;
     }
 }

@@ -8,24 +8,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('post_images', function (Blueprint $table) {
+       Schema::create('post_images', function (Blueprint $table) {
 
-            $table->id();
+    $table->id();
 
-            $table->foreignId('post_id')
-                  ->constrained('posts')
-                  ->cascadeOnDelete();
+    $table->foreignId('post_id')
+          ->constrained()
+          ->cascadeOnDelete();
 
-            $table->string('image_url')
-                  ->nullable();
+    $table->string('local_image_path');
 
-            $table->string('local_image_path');
+    $table->integer('image_order')
+          ->default(1);
 
-            $table->integer('image_order')
-                  ->default(1);
-
-            $table->timestamps();
-        });
+    $table->timestamps();
+});
     }
 
     public function down(): void
