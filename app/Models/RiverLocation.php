@@ -12,11 +12,22 @@ class RiverLocation extends Model
         'longitude',
         'district',
         'city',
+        'main_image_path',
+    ];
+
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function posts()
     {
         return $this->hasMany(Post::class, 'location_id');
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(RiverGallery::class, 'location_id');
     }
 
     public function priorityScores()

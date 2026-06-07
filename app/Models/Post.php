@@ -10,19 +10,20 @@ class Post extends Model
         'location_id',
         'instagram_post_id',
         'caption',
-        'image_url',
-        'local_image_path',
         'post_url',
         'username',
         'likes_count',
         'comments_count',
         'upload_date',
         'scraped_at',
+        'is_river_related',
+        'detected_river',
     ];
 
     protected $casts = [
         'upload_date' => 'datetime',
         'scraped_at' => 'datetime',
+        'is_river_related' => 'boolean',
     ];
 
     public function location()
@@ -38,5 +39,10 @@ class Post extends Model
     public function imageCaptionAnalysis()
     {
         return $this->hasOne(ImageCaptionAnalysis::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PostImage::class);
     }
 }
