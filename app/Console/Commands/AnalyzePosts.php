@@ -12,135 +12,77 @@ class AnalyzePosts extends Command
 {
     protected $signature = 'ai:analyze';
 
-    protected $description =
-        'Analisis Sentiment IndoBERT dan CLIP';
+    protected $description = 'Analisis Sentiment IndoBERT dan CLIP';
 
-    public function handle(
-        AIService $ai
-    ) {
-
-        $posts = Post::with('images')
-            ->where('is_river_related', true)
-            ->get();
+    public function handle(AIService $ai)
+    {
+        $this->info("Memulai analisis AI...");
 
         $total = 0;
 
-        $this->info(
-            "Total post yang akan dianalisis: {$posts->count()}"
-        );
+        Post::with([
+            'images',
+            'sentimentAnalysis',
+            'imageCaptionAnalysis'
+        ])
+        ->where('is_river_related', true)
+        ->chunk(100, function ($posts) use ($ai, &$total) {
 
-        $bar = $this->output->createProgressBar(
-            $posts->count()
-        );
+            foreach ($posts as $post) {
+                try {
+                    $sentiment = $ai->analyzeSentiment($post->caption ?? '');
 
-        $bar->start();
+                    SentimentAnalysis::updateOrCreate(
+                        ['post_id' => $post->id],
+                        [
+                            'sentiment_label' => $sentiment['sentiment'] ?? 'neutral',
+                            'sentiment_score' => $sentiment['score'] ?? 0,
+                            'model_name' => 'indobert-sentiment',
+                            'model_version' => '1.0',
+                            'analyzed_at' => now(),
+                        ]
+                    );
 
-        foreach ($posts as $post) {
+                } catch (\Exception $e) {
+                    $this->error("Sentiment gagal ID {$post->id}: {$e->getMessage()}");
+                }
 
-            try {
+                $image = $post->images->first();
 
-                $sentiment = $ai->analyzeSentiment(
-                    $post->caption ?? ''
-                );
+                if ($image) {
 
-                SentimentAnalysis::updateOrCreate(
-                    [
-                        'post_id' => $post->id
-                    ],
-                    [
-                        'sentiment_label' =>
-                            $sentiment['sentiment']
-                            ?? 'neutral',
+                    $fullPath = storage_path('app/' . $image->local_image_path);
 
-                        'sentiment_score' =>
-                            $sentiment['score']
-                            ?? 0,
+                    if (file_exists($fullPath)) {
 
-                        'model_name' =>
-                            'w11wo/indonesian-roberta-base-sentiment-classifier',
+                        try {
+                            $clip = $ai->analyzeClip(
+                                $fullPath,
+                                $post->caption ?? ''
+                            );
 
-                        'model_version' =>
-                            '1.0',
+                            ImageCaptionAnalysis::updateOrCreate(
+                                ['post_id' => $post->id],
+                                [
+                                    'relevance_score' => $clip['similarity_score'] ?? 0,
+                                    'model_name' => 'clip-vit-base-patch32',
+                                    'model_version' => '1.0',
+                                    'analyzed_at' => now(),
+                                ]
+                            );
 
-                        'analyzed_at' =>
-                            now(),
-                    ]
-                );
-
-            } catch (\Exception $e) {
-
-                $this->newLine();
-
-                $this->error(
-                    "Gagal sentiment Post ID {$post->id}: "
-                    . $e->getMessage()
-                );
-
-                continue;
-            }
-
-            $image = $post->images->first();
-
-            if ($image) {
-
-                $fullPath = storage_path(
-                    'app/' .
-                    $image->local_image_path
-                );
-
-                if (file_exists($fullPath)) {
-
-                    try {
-
-                        $clip = $ai->analyzeClip(
-                            $fullPath,
-                            $post->caption ?? ''
-                        );
-
-                        ImageCaptionAnalysis::updateOrCreate(
-                            [
-                                'post_id' => $post->id
-                            ],
-                            [
-                                'relevance_score' =>
-                                    $clip['similarity_score']
-                                    ?? 0,
-
-                                'model_name' =>
-                                    'openai/clip-vit-base-patch32',
-
-                                'model_version' =>
-                                    '1.0',
-
-                                'analyzed_at' =>
-                                    now(),
-                            ]
-                        );
-
-                    } catch (\Exception $e) {
-
-                        $this->newLine();
-
-                        $this->warn(
-                            "Gagal CLIP Post ID {$post->id}: "
-                            . $e->getMessage()
-                        );
+                        } catch (\Exception $e) {
+                            $this->warn("CLIP gagal ID {$post->id}: {$e->getMessage()}");
+                        }
                     }
                 }
+
+                $total++;
             }
+        });
 
-            $total++;
-
-            $bar->advance();
-        }
-
-        $bar->finish();
-
-        $this->newLine(2);
-
-        $this->info(
-            "Analisis selesai. {$total} post diproses."
-        );
+        $this->newLine();
+        $this->info("Analisis selesai. Total diproses: {$total}");
 
         return Command::SUCCESS;
     }

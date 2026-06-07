@@ -16,29 +16,30 @@ class DetectRiverPosts extends Command
     {
         $total = 0;
 
-        foreach (Post::all() as $post) {
+        Post::chunkById(200, function ($posts) use (&$total) {
 
-            $result = RiverDetector::detect($post->caption);
+            foreach ($posts as $post) {
 
-            $post->update([
-                'is_river_related' => $result['is_river_related'],
+                $result = RiverDetector::detect($post->caption ?? '');
 
-                'detected_river' => $result['river']
-                    ? $result['river']->river_name
-                    : null,
+                $river = $result['river'] ?? null;
 
-                'location_id' => $result['river']
-                    ? $result['river']->id
-                    : null,
-            ]);
+                $isRiverRelated = $result['is_river_related'] ?? false;
 
-            if ($result['is_river_related']) {
-                $total++;
+                $post->update([
+                    'is_river_related' => $isRiverRelated,
+                    'detected_river'   => $river?->river_name,
+                    'location_id'      => $river?->id,
+                ]);
+
+                if ($isRiverRelated) {
+                    $total++;
+                }
             }
-        }
+        });
 
-        $this->info(
-            "Deteksi sungai selesai. {$total} post terdeteksi terkait sungai."
-        );
+        $this->info("Deteksi sungai selesai. {$total} post terdeteksi terkait sungai.");
+
+        return Command::SUCCESS;
     }
 }

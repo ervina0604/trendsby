@@ -28,21 +28,38 @@ class Post extends Model
 
     public function location()
     {
-        return $this->belongsTo(RiverLocation::class, 'location_id');
+        return $this->belongsTo(
+            RiverLocation::class,
+            'location_id'
+        );
+    }
+
+    public function priorityScore()
+    {
+        return $this->hasOne(
+            PriorityScore::class,
+            'post_id'
+        );
     }
 
     public function sentimentAnalysis()
     {
-        return $this->hasOne(SentimentAnalysis::class);
+        return $this->hasOne(
+            SentimentAnalysis::class
+        );
     }
 
     public function imageCaptionAnalysis()
     {
-        return $this->hasOne(ImageCaptionAnalysis::class);
+        return $this->hasOne(
+            ImageCaptionAnalysis::class
+        );
     }
 
     public function images()
     {
-        return $this->hasMany(PostImage::class);
+        return $this->hasMany(
+            PostImage::class
+        );
     }
 }

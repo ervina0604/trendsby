@@ -46,14 +46,14 @@ def sentiment(data: dict):
         padding=True
     )
 
-    outputs = indobert_model(**inputs)
+    with torch.no_grad():
 
-    logits = outputs.logits
+        outputs = indobert_model(**inputs)
 
-    probs = torch.softmax(
-        logits,
-        dim=1
-    )
+        probs = torch.softmax(
+            outputs.logits,
+            dim=1
+        )
 
     prediction = torch.argmax(
         probs,
@@ -62,27 +62,25 @@ def sentiment(data: dict):
 
     confidence = probs[0][prediction].item()
 
-    labels = {
-        0: "positive",
-        1: "neutral",
-        2: "negative"
-    }
+    label = indobert_model.config.id2label[
+        prediction
+    ].lower()
 
     return {
-        "sentiment": labels[prediction],
+        "sentiment": label,
         "score": round(confidence, 4)
     }
+
 @app.post("/clip")
 def clip_match(data: dict):
 
     try:
 
-        image_path = data["image_path"]
-        caption = data["caption"]
-
         image = Image.open(
-            image_path
+            data["image_path"]
         ).convert("RGB")
+
+        caption = data["caption"]
 
         inputs = clip_processor(
             text=[caption],
@@ -95,16 +93,31 @@ def clip_match(data: dict):
 
             outputs = clip_model(**inputs)
 
-            similarity = (
-                outputs.logits_per_image[0][0]
-                .item()
+            image_embeds = (
+                outputs.image_embeds
             )
 
-        return {
-            "similarity_score": round(
-                similarity,
-                4
+            text_embeds = (
+                outputs.text_embeds
             )
+
+            image_embeds = image_embeds / image_embeds.norm(
+                dim=-1,
+                keepdim=True
+            )
+
+            text_embeds = text_embeds / text_embeds.norm(
+                dim=-1,
+                keepdim=True
+            )
+
+            similarity = (
+                image_embeds @ text_embeds.T
+            ).item()
+
+        return {
+            "similarity_score":
+                round(similarity, 4)
         }
 
     except Exception as e:

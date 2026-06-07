@@ -10,8 +10,7 @@ class CalculatePriorityScores extends Command
 {
     protected $signature = 'saw:calculate';
 
-    protected $description =
-        'Menghitung prioritas temuan lingkungan sungai menggunakan SAW';
+    protected $description = 'Menghitung prioritas temuan lingkungan sungai menggunakan SAW';
 
     public function handle()
     {
@@ -22,70 +21,53 @@ class CalculatePriorityScores extends Command
         ->where('is_river_related', true)
         ->get();
 
+        if ($posts->isEmpty()) {
+            $this->warn('Tidak ada data post untuk dihitung.');
+            return Command::SUCCESS;
+        }
+
         $rows = [];
 
         foreach ($posts as $post) {
 
-            $sentimentValue = match (
-                optional($post->sentimentAnalysis)
-                    ->sentiment_label
-            ) {
+            $sentimentLabel = optional($post->sentimentAnalysis)->sentiment_label;
+
+            $sentimentValue = match ($sentimentLabel) {
                 'negative' => 1,
                 'neutral'  => 0.5,
                 'positive' => 0,
                 default    => 0,
             };
 
-            $clipValue =
-                optional(
-                    $post->imageCaptionAnalysis
-                )->relevance_score ?? 0;
+            $clipValue = optional($post->imageCaptionAnalysis)->relevance_score ?? 0;
 
-            $engagement =
-                ($post->like_count ?? 0) +
-                ($post->comment_count ?? 0);
+            $engagementRaw =
+                ($post->likes_count ?? 0) +
+                ($post->comments_count ?? 0);
+
+            $engagement = log(1 + $engagementRaw);
 
             $rows[$post->id] = [
-
-                'sentiment' =>
-                    $sentimentValue,
-
-                'clip' =>
-                    $clipValue,
-
-                'engagement' =>
-                    $engagement,
-
-                'post' =>
-                    $post,
+                'sentiment'  => $sentimentValue,
+                'clip'       => $clipValue,
+                'engagement' => $engagement,
             ];
         }
 
-        $maxSentiment = collect($rows)
-            ->max('sentiment');
+        $maxSentiment  = collect($rows)->max('sentiment');
+        $maxClip       = collect($rows)->max('clip');
+        $maxEngagement = collect($rows)->max('engagement');
 
-        $maxClip = collect($rows)
-            ->max('clip');
 
-        $maxEngagement = collect($rows)
-            ->max('engagement');
+        $w1 = 0.50;
+        $w2 = 0.30;
+        $w3 = 0.20;
 
-        $w1 = 0.50; 
-        $w2 = 0.30; 
-        $w3 = 0.20; 
         foreach ($rows as $postId => $row) {
 
-            $r1 = $maxSentiment > 0
-                ? $row['sentiment'] / $maxSentiment
-                : 0;
-
-            $r2 = $maxClip > 0
-                ? $row['clip'] / $maxClip
-                : 0;
-
-            $r3 = $maxEngagement > 0
-                ? $row['engagement'] / $maxEngagement
-                : 0;
+            $r1 = $maxSentiment > 0 ? $row['sentiment'] / $maxSentiment : 0;
+            $r2 = $maxClip > 0 ? $row['clip'] / $maxClip : 0;
+            $r3 = $maxEngagement > 0 ? $row['engagement'] / $maxEngagement : 0;
 
             $priorityValue = round(
                 ($r1 * $w1) +
@@ -94,66 +76,33 @@ class CalculatePriorityScores extends Command
                 4
             );
 
-            $score100 = round(
-                $priorityValue * 100,
-                2
-            );
+            $score100 = $priorityValue * 100;
 
-            if ($score100 >= 80) {
-
-                $status =
-                    'Prioritas Tinggi';
-
-            } elseif ($score100 >= 60) {
-
-                $status =
-                    'Perlu Perhatian';
-
-            } else {
-
-                $status =
-                    'Baik';
-            }
+            $status = match (true) {
+                $score100 >= 80 => 'Prioritas Tinggi',
+                $score100 >= 60 => 'Perlu Perhatian',
+                default => 'Baik',
+            };
 
             PriorityScore::updateOrCreate(
+                ['post_id' => $postId],
                 [
-                    'post_id' => $postId
-                ],
-                [
-                    'priority_value' =>
-                        $priorityValue,
+                    'priority_value'   => $priorityValue,
+                    'priority_level'   => $status,
+                    'method'           => 'SAW',
 
-                    'priority_level' =>
-                        $status,
+                    'sentiment_weight' => $w1,
+                    'relevance_weight' => $w2,
+                    'engagement_weight'=> $w3,
 
-                    'method' =>
-                        'SAW',
-
-                    'post_count' =>
-                        1,
-
-                    'sentiment_weight' =>
-                        $w1,
-
-                    'relevance_weight' =>
-                        $w2,
-
-                    'period_start' =>
-                        now()->subMonth(),
-
-                    'period_end' =>
-                        now(),
-
-                    'calculated_at' =>
-                        now(),
+                    'period_start'     => now()->subMonth(),
+                    'period_end'       => now(),
+                    'calculated_at'    => now(),
                 ]
             );
         }
 
-        $this->info(
-            'Perhitungan SAW selesai'
-        );
-
+        $this->info('Perhitungan SAW selesai');
         return Command::SUCCESS;
     }
 }
