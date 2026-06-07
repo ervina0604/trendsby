@@ -14,22 +14,31 @@ class DetectRiverPosts extends Command
 
     public function handle()
     {
-        $posts = Post::all();
+        $total = 0;
 
-        foreach ($posts as $post) {
+        foreach (Post::all() as $post) {
 
-            $river = RiverDetector::detect($post->caption);
+            $result = RiverDetector::detect($post->caption);
 
-            if ($river) {
+            $post->update([
+                'is_river_related' => $result['is_river_related'],
 
-                $post->update([
-                    'is_river_related' => true,
-                    'detected_river' => $river->river_name,
-                    'location_id' => $river->id,
-                ]);
+                'detected_river' => $result['river']
+                    ? $result['river']->river_name
+                    : null,
+
+                'location_id' => $result['river']
+                    ? $result['river']->id
+                    : null,
+            ]);
+
+            if ($result['is_river_related']) {
+                $total++;
             }
         }
 
-        $this->info('Deteksi sungai selesai');
+        $this->info(
+            "Deteksi sungai selesai. {$total} post terdeteksi terkait sungai."
+        );
     }
 }
