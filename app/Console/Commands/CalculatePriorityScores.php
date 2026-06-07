@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Post;
 use App\Models\PriorityScore;
-use App\Models\RiverLocation;
 use Illuminate\Console\Command;
 
 class CalculatePriorityScores extends Command
@@ -12,109 +11,80 @@ class CalculatePriorityScores extends Command
     protected $signature = 'saw:calculate';
 
     protected $description =
-        'Menghitung skor prioritas sungai menggunakan metode SAW';
+        'Menghitung prioritas temuan lingkungan sungai menggunakan SAW';
 
     public function handle()
     {
-        $locations = RiverLocation::all();
+        $posts = Post::with([
+            'sentimentAnalysis',
+            'imageCaptionAnalysis'
+        ])
+        ->where('is_river_related', true)
+        ->get();
 
         $rows = [];
 
+        foreach ($posts as $post) {
 
-        foreach ($locations as $location) {
+            $sentimentValue = match (
+                optional($post->sentimentAnalysis)
+                    ->sentiment_label
+            ) {
+                'negative' => 1,
+                'neutral'  => 0.5,
+                'positive' => 0,
+                default    => 0,
+            };
 
-            $posts = Post::with([
-                    'sentimentAnalysis',
-                    'imageCaptionAnalysis'
-                ])
-                ->where('location_id', $location->id)
-                ->where('is_river_related', true)
-                ->get();
+            $clipValue =
+                optional(
+                    $post->imageCaptionAnalysis
+                )->relevance_score ?? 0;
 
-            $postCount = $posts->count();
+            $engagement =
+                ($post->like_count ?? 0) +
+                ($post->comment_count ?? 0);
 
-            if ($postCount === 0) {
+            $rows[$post->id] = [
 
-                $rows[$location->id] = [
-                    'post_count' => 0,
-                    'negative_ratio' => 0,
-                    'clip_avg' => 0,
-                ];
+                'sentiment' =>
+                    $sentimentValue,
 
-                continue;
-            }
+                'clip' =>
+                    $clipValue,
 
-            $negativeCount = $posts
-                ->filter(function ($post) {
+                'engagement' =>
+                    $engagement,
 
-                    return optional(
-                        $post->sentimentAnalysis
-                    )->sentiment_label === 'negative';
-                })
-                ->count();
-
-            $negativeRatio =
-                $negativeCount / $postCount;
-
-            $clipAvg = $posts
-                ->filter(function ($post) {
-
-                    return $post->imageCaptionAnalysis;
-                })
-                ->avg(function ($post) {
-
-                    return $post
-                        ->imageCaptionAnalysis
-                        ->relevance_score;
-                });
-
-            $rows[$location->id] = [
-
-                'post_count' =>
-                    $postCount,
-
-                'negative_ratio' =>
-                    round(
-                        $negativeRatio,
-                        4
-                    ),
-
-                'clip_avg' =>
-                    round(
-                        $clipAvg ?? 0,
-                        4
-                    ),
+                'post' =>
+                    $post,
             ];
         }
 
-        $maxPost = collect($rows)
-            ->max('post_count');
-
-        $maxNegative = collect($rows)
-            ->max('negative_ratio');
+        $maxSentiment = collect($rows)
+            ->max('sentiment');
 
         $maxClip = collect($rows)
-            ->max('clip_avg');
+            ->max('clip');
 
+        $maxEngagement = collect($rows)
+            ->max('engagement');
 
-        $w1 = 0.30; 
-        $w2 = 0.50; 
+        $w1 = 0.50; 
+        $w2 = 0.30; 
         $w3 = 0.20; 
+        foreach ($rows as $postId => $row) {
 
-
-
-        foreach ($rows as $locationId => $row) {
-
-            $r1 = $maxPost > 0
-                ? $row['post_count'] / $maxPost
+            $r1 = $maxSentiment > 0
+                ? $row['sentiment'] / $maxSentiment
                 : 0;
 
-            $r2 = $maxNegative > 0
-                ? $row['negative_ratio'] / $maxNegative
+            $r2 = $maxClip > 0
+                ? $row['clip'] / $maxClip
                 : 0;
 
-            $r3 = $maxClip > 0
-                ? $row['clip_avg'] / $maxClip
+            $r3 = $maxEngagement > 0
+                ? $row['engagement'] / $maxEngagement
                 : 0;
 
             $priorityValue = round(
@@ -124,15 +94,17 @@ class CalculatePriorityScores extends Command
                 4
             );
 
-            $displayScore =
-                $priorityValue * 100;
+            $score100 = round(
+                $priorityValue * 100,
+                2
+            );
 
-            if ($displayScore >= 80) {
+            if ($score100 >= 80) {
 
                 $status =
                     'Prioritas Tinggi';
 
-            } elseif ($displayScore >= 60) {
+            } elseif ($score100 >= 60) {
 
                 $status =
                     'Perlu Perhatian';
@@ -145,8 +117,7 @@ class CalculatePriorityScores extends Command
 
             PriorityScore::updateOrCreate(
                 [
-                    'location_id' =>
-                        $locationId
+                    'post_id' => $postId
                 ],
                 [
                     'priority_value' =>
@@ -159,13 +130,13 @@ class CalculatePriorityScores extends Command
                         'SAW',
 
                     'post_count' =>
-                        $row['post_count'],
+                        1,
 
                     'sentiment_weight' =>
-                        $w2,
+                        $w1,
 
                     'relevance_weight' =>
-                        $w3,
+                        $w2,
 
                     'period_start' =>
                         now()->subMonth(),
