@@ -27,33 +27,42 @@ class Post extends Model
     ];
 
     public function location()
-    {
-        return $this->belongsTo(
-            RiverLocation::class,
-            'location_id'
-        );
-    }
-
-    public function priorityScore()
-    {
-        return $this->hasOne(
-            PriorityScore::class,
-            'post_id'
-        );
-    }
-
-   public function sentimentAnalysis()
 {
-    return $this->hasOne(SentimentAnalysis::class, 'post_id');
+    return $this->belongsTo(
+        RiverLocation::class,
+        'location_id'
+    );
 }
 
-public function imageCaptionAnalyses()
+public function priorityScore()
 {
-    return $this->hasMany(ImageCaptionAnalysis::class, 'post_id');
+    return $this->hasOne(
+        PriorityScore::class,
+        'post_id'
+    );
+}
+
+public function sentimentAnalysis()
+{
+    return $this->hasOne(
+        SentimentAnalysis::class,
+        'post_id'
+    );
 }
 
 public function images()
 {
-    return $this->hasMany(PostImage::class, 'post_id');
+    return $this->hasMany(
+        PostImage::class,
+        'post_id'
+    );
+}
+
+public function imageCaptionAnalyses()
+{
+    return $this->hasMany(
+        ImageCaptionAnalysis::class,
+        'post_id'
+    );
 }
 }

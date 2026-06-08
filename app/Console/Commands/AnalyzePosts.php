@@ -23,7 +23,6 @@ class AnalyzePosts extends Command
 
             foreach ($posts as $post) {
 
-                // 1. SENTIMENT
                 $sentiment = $ai->analyzeSentiment($post->caption ?? '');
 
                 SentimentAnalysis::updateOrCreate(
@@ -37,7 +36,6 @@ class AnalyzePosts extends Command
                     ]
                 );
 
-                // 2. SKIP IF NO IMAGE
                 if ($post->images->isEmpty()) {
                     $this->line("Skip (no images) Post ID: {$post->id}");
                     continue;
@@ -52,14 +50,14 @@ class AnalyzePosts extends Command
                         continue;
                     }
 
-                    // 3. CEK DUPLICATE
+
                     $exists = ImageCaptionAnalysis::where('post_id', $post->id)
                         ->where('image_id', $image->id)
                         ->exists();
 
                     if ($exists) continue;
 
-                    // 4. CLIP ANALYSIS
+
                     $clip = $ai->analyzeClip($fullPath, $post->caption ?? '');
 
                     ImageCaptionAnalysis::updateOrCreate(

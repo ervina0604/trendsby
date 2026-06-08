@@ -125,34 +125,103 @@ class ImportInstagramPosts extends Command
         return $images;
     }
 
-    private function detectRiver(?string $caption): array
-    {
-        if (!$caption) {
-            return [
-                'location_id' => null,
-                'is_river_related' => false,
-                'detected_river' => null,
-            ];
-        }
-
-        $caption = strtolower($caption);
-
-        $keywords = ['sungai', 'kali', 'limbah', 'sampah', 'tercemar'];
-
-        foreach ($keywords as $k) {
-            if (str_contains($caption, $k)) {
-                return [
-                    'location_id' => null,
-                    'is_river_related' => true,
-                    'detected_river' => null,
-                ];
-            }
-        }
-
+   private function detectRiver(?string $caption): array
+{
+    if (!$caption) {
         return [
             'location_id' => null,
             'is_river_related' => false,
             'detected_river' => null,
         ];
     }
+
+    $caption = strtolower($caption);
+
+    $aliases = [
+
+        'kalimas' => 'Kalimas',
+        'kali surabaya' => 'Kalimas',
+        'sungai surabaya' => 'Kalimas',
+
+        'jagir' => 'Jagir',
+
+        'gunung anyar' => 'Gunung Anyar',
+
+        'dadapan' => 'Dadapan',
+
+        'keputih' => 'Keputih',
+
+        'damean' => 'Damean',
+
+        'kalisari' => 'Kalisari',
+
+        'kedung cowek' => 'Kedung Cowek',
+
+        'tambak wedi' => 'Tambak Wedi',
+
+        'bosem kalianak' => 'Bosem Kalianak',
+
+        'kalianak' => 'Kalianak',
+
+        'greges' => 'Greges',
+
+        'manukan' => 'Manukan',
+
+        'tambak langon' => 'Tambak Langon',
+
+        'sememi' => 'Sememi',
+
+        'kali lamong' => 'Kali Lamong',
+
+        'kebon agung' => 'Kebon Agung',
+    ];
+
+    foreach ($aliases as $keyword => $riverName) {
+
+        if (str_contains($caption, $keyword)) {
+
+            $river = RiverLocation::where(
+                'river_name',
+                $riverName
+            )->first();
+
+            if ($river) {
+
+                return [
+                    'location_id' => $river->id,
+                    'is_river_related' => true,
+                    'detected_river' => $river->river_name,
+                ];
+            }
+        }
+    }
+
+    $keywords = [
+        'sungai',
+        'kali',
+        'limbah',
+        'sampah',
+        'tercemar',
+        'banjir',
+        'air sungai',
+    ];
+
+    foreach ($keywords as $keyword) {
+
+        if (str_contains($caption, $keyword)) {
+
+            return [
+                'location_id' => null,
+                'is_river_related' => true,
+                'detected_river' => null,
+            ];
+        }
+    }
+
+    return [
+        'location_id' => null,
+        'is_river_related' => false,
+        'detected_river' => null,
+    ];
+}
 }

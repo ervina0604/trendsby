@@ -15,6 +15,9 @@ class RiverGallery extends Model
 
     public function location()
     {
-        return $this->belongsTo(RiverLocation::class, 'location_id');
+        return $this->belongsTo(
+            RiverLocation::class,
+            'location_id'
+        );
     }
 }

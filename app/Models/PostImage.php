@@ -13,12 +13,19 @@ class PostImage extends Model
         'image_order',
     ];
 
-    public function post()
-    {
-        return $this->belongsTo(
-            Post::class,
-            'post_id',
-            'id'
-        );
-    }
+   public function post()
+{
+    return $this->belongsTo(
+        Post::class,
+        'post_id'
+    );
+}
+
+public function imageCaptionAnalyses()
+{
+    return $this->hasMany(
+        ImageCaptionAnalysis::class,
+        'image_id'
+    );
+}
 }

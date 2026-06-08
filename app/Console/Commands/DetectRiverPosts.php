@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\Post;
 use App\Models\RiverLocation;
-use App\Services\RiverDetector;
 use Illuminate\Console\Command;
 
 class DetectRiverPosts extends Command
@@ -17,37 +16,112 @@ class DetectRiverPosts extends Command
     {
         $total = 0;
 
-        Post::with('location')
-            ->chunkById(200, function ($posts) use (&$total) {
+        $aliases = [
 
-                foreach ($posts as $post) {
+            'kalimas' => 'Kalimas',
+            'kali surabaya' => 'Kalimas',
+            'sungai surabaya' => 'Kalimas',
 
-                    $result = RiverDetector::detect($post->caption ?? '');
+            'jagir' => 'Jagir',
 
-                    $river = $result['river'] ?? null;
-                    $isRiverRelated = (bool) ($result['is_river_related'] ?? false);
+            'gunung anyar' => 'Gunung Anyar',
 
-                    $locationId = null;
-                    $riverName = null;
+            'dadapan' => 'Dadapan',
 
-                    if ($river instanceof RiverLocation) {
-                        $locationId = $river->id;
-                        $riverName = $river->river_name;
-                    }
+            'keputih' => 'Keputih',
 
-                    $post->update([
-                        'is_river_related' => $isRiverRelated,
-                        'detected_river'   => $riverName,
-                        'location_id'      => $locationId,
-                    ]);
+            'damean' => 'Damean',
 
-                    if ($isRiverRelated) {
-                        $total++;
+            'kalisari' => 'Kalisari',
+
+            'kedung cowek' => 'Kedung Cowek',
+
+            'tambak wedi' => 'Tambak Wedi',
+
+            'bosem kalianak' => 'Bosem Kalianak',
+
+            'kalianak' => 'Kalianak',
+
+            'greges' => 'Greges',
+
+            'manukan' => 'Manukan',
+
+            'tambak langon' => 'Tambak Langon',
+
+            'sememi' => 'Sememi',
+
+            'kali lamong' => 'Kali Lamong',
+
+            'kebon agung' => 'Kebon Agung',
+        ];
+
+        Post::chunkById(200, function ($posts) use (&$total, $aliases) {
+
+            foreach ($posts as $post) {
+
+                $caption = strtolower($post->caption ?? '');
+
+                $locationId = null;
+                $riverName = null;
+                $isRiverRelated = false;
+
+                foreach ($aliases as $keyword => $name) {
+
+                    if (str_contains($caption, $keyword)) {
+
+                        $river = RiverLocation::where(
+                            'river_name',
+                            $name
+                        )->first();
+
+                        if ($river) {
+
+                            $locationId = $river->id;
+                            $riverName = $river->river_name;
+                            $isRiverRelated = true;
+
+                            break;
+                        }
                     }
                 }
-            });
 
-        $this->info("Deteksi sungai selesai. {$total} post terdeteksi terkait sungai.");
+                if (!$isRiverRelated) {
+
+                    $genericKeywords = [
+                        'sungai',
+                        'kali',
+                        'limbah',
+                        'sampah',
+                        'tercemar',
+                        'banjir',
+                        'air sungai',
+                    ];
+
+                    foreach ($genericKeywords as $keyword) {
+
+                        if (str_contains($caption, $keyword)) {
+
+                            $isRiverRelated = true;
+                            break;
+                        }
+                    }
+                }
+
+                $post->update([
+                    'is_river_related' => $isRiverRelated,
+                    'detected_river' => $riverName,
+                    'location_id' => $locationId,
+                ]);
+
+                if ($isRiverRelated) {
+                    $total++;
+                }
+            }
+        });
+
+        $this->info(
+            "Deteksi selesai. {$total} post terkait sungai."
+        );
 
         return Command::SUCCESS;
     }

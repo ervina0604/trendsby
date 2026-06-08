@@ -22,16 +22,17 @@ class RiverLocation extends Model
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'location_id');
+        return $this->hasMany(
+            Post::class,
+            'location_id'
+        );
     }
 
     public function galleries()
     {
-        return $this->hasMany(RiverGallery::class, 'location_id');
-    }
-
-    public function priorityScores()
-    {
-        return $this->hasMany(PriorityScore::class, 'location_id');
+        return $this->hasMany(
+            RiverGallery::class,
+            'location_id'
+        );
     }
 }

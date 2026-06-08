@@ -7,13 +7,16 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
 
         body{
             font-family:'Manrope',sans-serif;
-            background:#f4f5f6;
+            background:#f6f7f8;
             color:#1f2937;
         }
 
@@ -43,10 +46,18 @@
             background:#2bb673;
         }
 
+        .nav-link::after{
+            transition:.2s;
+        }
+
         .card{
             background:white;
             border-radius:24px;
             box-shadow:0 4px 20px rgba(0,0,0,.04);
+        }
+
+        footer{
+            background: linear-gradient(to top, #ffffff, #f9fafb);
         }
 
     </style>
@@ -119,12 +130,7 @@
 
                 <img
                     src="{{ asset('storage/logo.png') }}"
-                    alt="Logo SuraTrend"
                     class="h-8">
-
-                <h3 class="font-bold text-3xl text-[#04543D]">
-                    SuraTrend
-                </h3>
 
             </div>
 
@@ -137,11 +143,8 @@
         <div class="flex gap-8 mt-6 md:mt-0 text-sm font-semibold text-gray-500">
 
             <a href="{{ route('home') }}">Home</a>
-
             <a href="{{ route('peta') }}">Peta Sungai</a>
-
             <a href="{{ route('prioritas') }}">Prioritas Sungai</a>
-
             <a href="{{ route('tentang') }}">Tentang</a>
 
         </div>

@@ -8,7 +8,8 @@ class RiverDetector
 {
     public static function detect(?string $caption): array
     {
-        if (empty($caption)) {
+        if (!$caption) {
+
             return [
                 'is_river_related' => false,
                 'river' => null
@@ -17,36 +18,75 @@ class RiverDetector
 
         $text = strtolower($caption);
 
-        foreach (RiverLocation::all() as $river) {
+        $aliases = [
 
-            $riverName = strtolower($river->river_name);
-            $shortName = strtolower(str_replace('sungai ', '', $riverName));
+            'kali surabaya' => 'Kalimas',
+            'sungai surabaya' => 'Kalimas',
 
-            if (
-                str_contains($text, $riverName) ||
-                str_contains($text, $shortName)
-            ) {
-                return [
-                    'is_river_related' => true,
-                    'river' => $river
-                ];
+            'kalimas' => 'Kalimas',
+            'jagir' => 'Jagir',
+            'gunung anyar' => 'Gunung Anyar',
+            'dadapan' => 'Dadapan',
+            'keputih' => 'Keputih',
+            'damean' => 'Damean',
+            'kalisari' => 'Kalisari',
+            'kedung cowek' => 'Kedung Cowek',
+            'tambak wedi' => 'Tambak Wedi',
+            'bosem kalianak' => 'Bosem Kalianak',
+            'kalianak' => 'Kalianak',
+            'greges' => 'Greges',
+            'manukan' => 'Manukan',
+            'tambak langon' => 'Tambak Langon',
+            'sememi' => 'Sememi',
+            'kali lamong' => 'Kali Lamong',
+            'kebon agung' => 'Kebon Agung',
+        ];
+
+        foreach ($aliases as $keyword => $riverName) {
+
+            if (str_contains($text, $keyword)) {
+
+                $river = RiverLocation::where(
+                    'river_name',
+                    $riverName
+                )->first();
+
+                if ($river) {
+
+                    return [
+                        'is_river_related' => true,
+                        'river' => $river
+                    ];
+                }
             }
         }
 
         $riverKeywords = [
-            'sungai', 'kali', 'bantaran', 'das'
+            'sungai',
+            'kali',
+            'bantaran',
+            'das'
         ];
 
         $problemKeywords = [
-            'banjir', 'limbah', 'sampah', 'plastik',
-            'tercemar', 'pencemaran', 'bau', 'keruh',
-            'pendangkalan', 'sedimentasi', 'ekosistem'
+            'banjir',
+            'limbah',
+            'sampah',
+            'plastik',
+            'tercemar',
+            'pencemaran',
+            'bau',
+            'keruh',
+            'pendangkalan',
+            'sedimentasi',
+            'ekosistem'
         ];
 
         $hasRiverContext = false;
         $hasProblem = false;
 
         foreach ($riverKeywords as $word) {
+
             if (str_contains($text, $word)) {
                 $hasRiverContext = true;
                 break;
@@ -54,14 +94,15 @@ class RiverDetector
         }
 
         foreach ($problemKeywords as $word) {
+
             if (str_contains($text, $word)) {
                 $hasProblem = true;
                 break;
             }
         }
 
-        // hanya dianggap river-related kalau ADA konteks sungai + isu
         if ($hasRiverContext && $hasProblem) {
+
             return [
                 'is_river_related' => true,
                 'river' => null
