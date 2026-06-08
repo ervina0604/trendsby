@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RiverController;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
 Route::get('/peta', function () {
     return view('peta');
@@ -18,5 +19,5 @@ Route::get('/tentang', function () {
     return view('tentang');
 })->name('tentang');
 
-Route::get('/sungai/{id}', [RiverController::class, 'show'])
+Route::get('/sungai/{slug}', [RiverController::class, 'show'])
     ->name('detail.sungai');

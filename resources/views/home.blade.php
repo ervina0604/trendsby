@@ -130,52 +130,103 @@ function statusColor($status){
 
 const rivers = @json($rivers);
 
-const map = L.map('homeMap').setView([-7.2575,112.7521], 11);
+const map = L.map('homeMap').setView(
+    [-7.2575, 112.7521],
+    11
+);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
-}).addTo(map);
+L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        attribution: '© OpenStreetMap'
+    }
+).addTo(map);
 
 function color(status){
-    if(status === 'Baik') return '#16a34a';
-    if(status === 'Perlu Perhatian') return '#f59e0b';
-    if(status === 'Prioritas Tinggi') return '#dc2626';
+
+    if(status === 'Baik'){
+        return '#16a34a';
+    }
+
+    if(status === 'Perlu Perhatian'){
+        return '#f59e0b';
+    }
+
+    if(status === 'Prioritas Tinggi'){
+        return '#dc2626';
+    }
+
     return '#6b7280';
 }
 
+const riverName =
+    document.getElementById('riverName');
+
+const riverStatus =
+    document.getElementById('riverStatus');
+
+const riverScore =
+    document.getElementById('riverScore');
+
+const riverDesc =
+    document.getElementById('riverDesc');
+
+const riverImage =
+    document.getElementById('riverImage');
+
+const detailLink =
+    document.getElementById('detailLink');
+
 rivers.forEach(r => {
 
-    const marker = L.circleMarker([r.lat, r.lng], {
-        radius: 9,
-        fillColor: color(r.status),
-        color: '#fff',
-        weight: 3,
-        fillOpacity: 1
-    }).addTo(map);
+    const marker = L.circleMarker(
+        [r.lat, r.lng],
+        {
+            radius: 10,
+            fillColor: color(r.status),
+            color: '#ffffff',
+            weight: 3,
+            fillOpacity: 1
+        }
+    ).addTo(map);
 
     marker.bindPopup(`
-        <b>${r.name}</b><br>
-        ${r.status}<br>
-        Score: ${r.score}
+        <div style="min-width:180px">
+            <strong>${r.name}</strong><br>
+            Status: ${r.status}<br>
+            Score: ${r.score}
+        </div>
     `);
 
     marker.on('click', () => {
 
-        map.flyTo([r.lat, r.lng], 13);
+        map.flyTo(
+            [r.lat, r.lng],
+            13,
+            {
+                duration: 1.5
+            }
+        );
 
-        document.getElementById('riverName').innerText = r.name;
-        document.getElementById('riverStatus').innerText = r.status;
-        document.getElementById('riverScore').innerText = r.score;
-        document.getElementById('riverDesc').innerText = r.desc;
+        riverName.textContent =
+            r.name;
 
-        document.getElementById('riverImage').src =
+        riverStatus.textContent =
+            r.status;
+
+        riverScore.textContent =
+            r.score;
+
+        riverDesc.textContent =
+            r.desc;
+
+        riverImage.src =
             r.image
-            ? '/storage/' + r.image
-            : '/storage/home-sungai.png';
+                ? r.image
+                : '{{ asset("storage/home-sungai.png") }}';
 
-        const slug = r.name.toLowerCase().replace(/\s+/g,'-');
-        document.getElementById('detailLink').href = `/sungai/${slug}`;
-
+        detailLink.href =
+            `/sungai/${r.slug}`;
     });
 
 });

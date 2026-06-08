@@ -9,22 +9,17 @@ class HomeController extends Controller
     public function index()
     {
         $rivers = RiverLocation::with([
-            'posts.priorityScore'
+            'posts.priorityScore',
+            'galleries'
         ])->get();
 
         $rivers = $rivers->map(function ($river) {
 
-            $scores = $river->posts
+            $highestScore = $river->posts
                 ->pluck('priorityScore')
-                ->filter();
-
-            $avgScore = $scores->avg('priority_value') ?? 0;
-
-            $status = match (true) {
-                ($avgScore * 100) >= 80 => 'Prioritas Tinggi',
-                ($avgScore * 100) >= 60 => 'Perlu Perhatian',
-                default => 'Baik',
-            };
+                ->filter()
+                ->sortByDesc('priority_value')
+                ->first();
 
             return [
 
@@ -36,19 +31,22 @@ class HomeController extends Controller
 
                 'lng' => $river->longitude,
 
-                'status' => $status,
+                'status' => $highestScore->priority_level
+                    ?? 'Belum Dianalisis',
 
-                'score' => round($avgScore * 100),
+                'score' => $highestScore
+                    ? round($highestScore->priority_value * 100, 2)
+                    : 0,
 
-                'desc' =>
-                    $river->district .
-                    ', ' .
-                    $river->city,
+                'desc' => $river->district . ', ' . $river->city,
 
                 'image' => $river->main_image_path
                     ? asset('storage/' . $river->main_image_path)
                     : asset('storage/home-sungai.png'),
 
+                'slug' => strtolower(
+                    str_replace(' ', '-', $river->river_name)
+                ),
             ];
         });
 

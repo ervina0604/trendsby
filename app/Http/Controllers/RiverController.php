@@ -3,35 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\RiverLocation;
+use Illuminate\Support\Str;
 
 class RiverController extends Controller
 {
-    public function show($id)
+    public function show($slug)
     {
         $river = RiverLocation::with([
             'posts.priorityScore',
             'galleries'
-        ])->findOrFail($id);
+        ])
+        ->get()
+        ->first(function ($item) use ($slug) {
 
-        $posts = $river->posts;
+            return Str::slug($item->river_name) === $slug;
+        });
 
-        $scores = $posts
+        abort_if(!$river, 404);
+
+        $highestScore = $river->posts
             ->pluck('priorityScore')
-            ->filter();
+            ->filter()
+            ->sortByDesc('priority_value')
+            ->first();
 
-        $avgScore = $scores->avg('priority_value') ?? 0;
-
-        $status = match (true) {
-            ($avgScore * 100) >= 80 => 'Prioritas Tinggi',
-            ($avgScore * 100) >= 60 => 'Perlu Perhatian',
-            default => 'Baik',
-        };
-
-        $latestPost = $posts
+        $latestPost = $river->posts
             ->sortByDesc('upload_date')
             ->first();
 
         return view('detail-sungai', [
+
             'sungai' => [
 
                 'id' => $river->id,
@@ -43,27 +44,46 @@ class RiverController extends Controller
                     ', ' .
                     $river->city,
 
-                'foto' =>
-                    asset(
-                        'storage/' .
-                        $river->main_image_path
-                    ),
+                'foto' => $river->main_image_path
+                    ? asset('storage/' . $river->main_image_path)
+                    : asset('storage/home-sungai.png'),
 
                 'lat' => $river->latitude,
 
                 'lng' => $river->longitude,
 
-                'status' => $status,
+                'status' =>
+                    $highestScore->priority_level
+                    ?? 'Belum Dianalisis',
 
                 'score' =>
-                    round(
-                        $avgScore * 100,
+                    $highestScore
+                    ? round(
+                        $highestScore->priority_value * 100,
                         2
-                    ),
+                    )
+                    : 0,
 
                 'deskripsi' =>
-                    $latestPost->caption ?? '-',
-            ]
+                    Str::limit(
+                        $latestPost->caption ?? '-',
+                        300
+                    ),
+            ],
+
+            'gallery' => $river->galleries
+                ->map(function ($gallery) {
+
+                    return [
+                        'image' => asset(
+                            'storage/' .
+                            $gallery->image_path
+                        ),
+
+                        'caption' => $gallery->caption,
+                    ];
+                })
+                ->values(),
         ]);
     }
 }
