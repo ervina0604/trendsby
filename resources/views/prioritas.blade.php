@@ -122,13 +122,18 @@ table th, table td {
         'nama' => '-',
         'score' => 0,
         'status' => '-',
+        'issue_percentages' => ['Sampah' => 0, 'Sedimen' => 0, 'Limbah' => 0],
+        'dominant_issue' => null,
     ]);
+
+    $issuePercentages = $top['issue_percentages'] ?? ['Sampah' => 0, 'Sedimen' => 0, 'Limbah' => 0];
+    $dominantIssue = $top['dominant_issue'] ?? null;
 
     $statusClass = 'inline-block mt-6 px-4 py-2 rounded-full font-bold ';
 
     if ($top['status'] === 'Baik') {
         $statusClass .= 'bg-emerald-100 text-emerald-700';
-    } elseif ($top['status'] === 'Perhatian') {
+    } elseif ($top['status'] === 'Perlu Perhatian') {
         $statusClass .= 'bg-amber-100 text-amber-700';
     } else {
         $statusClass .= 'bg-red-100 text-red-600';
@@ -144,11 +149,6 @@ table th, table td {
             <h1 class="text-5xl font-bold text-white">
                 Prioritas Penanganan Sungai
             </h1>
-
-            <p class="text-white/70 mt-3 text-lg">
-                Ranking sungai berdasarkan hasil analisis media sosial,
-                dokumentasi lapangan, dan skor prioritas penanganan.
-            </p>
         </div>
 
         <div class="bg-[#04543D] text-white px-8 py-5 rounded-3xl shadow-lg">
@@ -217,26 +217,29 @@ table th, table td {
                 </span>
 
                 <p class="mt-6 text-white/70 leading-relaxed">
-                    Sungai dengan tingkat prioritas tertinggi yang memerlukan
-                    perhatian lebih lanjut berdasarkan hasil pemantauan.
+                    Ringkasan mayoritas caption dari analisis sentimen menunjukkan
+                    {{ $dominantIssue ? strtolower($dominantIssue) : 'belum ada data' }} sebagai fokus utama.
                 </p>
 
-                <div class="grid grid-cols-3 gap-4 mt-8">
+                <div class="grid md:grid-cols-3 gap-4 mt-8">
 
-                    <div>
-                        <div class="text-sm text-white/70">Sampah</div>
-                        <div class="text-3xl font-bold text-red-500">85%</div>
-                    </div>
+                    @foreach([
+                        ['label' => 'Sampah', 'color' => '#ef4444'],
+                        ['label' => 'Sedimen', 'color' => '#f59e0b'],
+                        ['label' => 'Limbah', 'color' => '#8b5cf6'],
+                    ] as $item)
+                        @php
+                            $value = $issuePercentages[$item['label']] ?? 0;
+                        @endphp
 
-                    <div>
-                        <div class="text-sm text-white/70">Sedimen</div>
-                        <div class="text-3xl font-bold text-yellow-400">70%</div>
-                    </div>
-
-                    <div>
-                        <div class="text-sm text-white/70">Limbah</div>
-                        <div class="text-3xl font-bold text-purple-400">50%</div>
-                    </div>
+                        <div class="rounded-2xl bg-white/10 p-4">
+                            <div class="text-sm text-white/70">{{ $item['label'] }}</div>
+                            <div class="text-3xl font-bold mt-2" style="color: {{ $item['color'] }}">{{ $value }}%</div>
+                            <div class="h-2 rounded-full bg-white/10 mt-3 overflow-hidden">
+                                <div class="h-2 rounded-full" style="width: {{ $value }}%; background: {{ $item['color'] }}"></div>
+                            </div>
+                        </div>
+                    @endforeach
 
                 </div>
 
@@ -269,7 +272,7 @@ table th, table td {
             class="glass-card p-6 hover:-translate-y-2 transition">
 
             <div class="text-sm text-white/70">
-                Priority Score
+                Nilai Prioritas
             </div>
 
             <div class="font-bold text-2xl mt-3 text-white">
@@ -320,7 +323,7 @@ table th, table td {
                         <tr>
                             <th class="text-left p-5 text-white/70">Rank</th>
                             <th class="text-left text-white/70">Nama Sungai</th>
-                            <th class="text-center text-white/70">Score</th>
+                            <th class="text-center text-white/70">Nilai Prioritas</th>
                             <th class="text-center text-white/70">Status</th>
                             <th class="text-center text-white/70">Detail</th>
                         </tr>
@@ -351,9 +354,9 @@ table th, table td {
                                 <span class="text-red-600 font-semibold">
                                     Kritis
                                 </span>
-                            @elseif($item['status']=='Perhatian')
+                            @elseif($item['status']=='Perlu Perhatian')
                                 <span class="text-yellow-500 font-semibold">
-                                    Perhatian
+                                    Perlu Perhatian
                                 </span>
                             @else
                                 <span class="text-green-600 font-semibold">
@@ -393,11 +396,17 @@ table th, table td {
 
 <script>
 
+const statusDistribution = @json($statusDistribution ?? ['Kritis' => 0, 'Perlu Perhatian' => 0, 'Baik' => 0]);
+
 new ApexCharts(
 document.querySelector("#priorityChart"),
 {
-series:[3,7,7],
-labels:['Kritis','Perhatian','Baik'],
+series:[
+    statusDistribution.Kritis || 0,
+    statusDistribution['Perlu Perhatian'] || 0,
+    statusDistribution.Baik || 0
+],
+labels:['Kritis','Perlu Perhatian','Baik'],
 chart:{
 type:'donut',
 height:320
