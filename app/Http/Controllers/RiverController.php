@@ -11,6 +11,8 @@ class RiverController extends Controller
     {
         $river = RiverLocation::with([
             'posts.priorityScore',
+            'posts.sentimentAnalysis',
+            'posts.imageCaptionAnalyses',
             'galleries'
         ])
         ->get()
@@ -30,6 +32,8 @@ class RiverController extends Controller
         $latestPost = $river->posts
             ->sortByDesc('upload_date')
             ->first();
+
+        $sentimentSummary = $this->buildSentimentSummary($river->posts);
 
         return view('detail-sungai', [
 
@@ -65,11 +69,9 @@ class RiverController extends Controller
                     )
                     : 0,
 
-                'deskripsi' =>
-                    Str::limit(
-                        $latestPost->caption ?? '-',
-                        300
-                    ),
+                'deskripsi' => $this->buildRiverDescription($river, $sentimentSummary),
+                'insight' => $sentimentSummary['text'],
+                'sentiment_summary' => $sentimentSummary,
                 'jumlah_galeri' => $river->galleries->count(),
                 'jumlah_post' => $river->posts->count(),
                 'galleries' => $river->galleries
@@ -85,5 +87,69 @@ class RiverController extends Controller
                     ->values(),
             ],
         ]);
+    }
+
+    private function buildSentimentSummary($posts): array
+    {
+        $analyses = collect($posts)
+            ->pluck('sentimentAnalysis')
+            ->filter();
+
+        if ($analyses->isEmpty()) {
+            return [
+                'text' => 'Belum ada cukup data analisis sentimen untuk memberikan ringkasan otomatis. Informasi ini akan berkembang seiring bertambahnya monitoring.',
+                'positif' => 0,
+                'netral' => 0,
+                'negatif' => 0,
+                'dominant' => 'netral',
+            ];
+        }
+
+        $counts = [
+            'positif' => 0,
+            'netral' => 0,
+            'negatif' => 0,
+        ];
+
+        foreach ($analyses as $analysis) {
+            $label = strtolower((string) ($analysis->sentiment_label ?? 'netral'));
+
+            if (str_contains($label, 'neg')) {
+                $counts['negatif']++;
+            } elseif (str_contains($label, 'pos')) {
+                $counts['positif']++;
+            } else {
+                $counts['netral']++;
+            }
+        }
+
+        $dominant = collect($counts)
+            ->sortDesc()
+            ->keys()
+            ->first();
+
+        $tone = match ($dominant) {
+            'negatif' => 'lebih banyak menyoroti kekhawatiran terhadap kondisi sungai',
+            'positif' => 'lebih banyak menampilkan nuansa optimis terhadap upaya pemulihan',
+            default => 'cenderung bersifat netral dengan fokus pada informasi monitoring',
+        };
+
+        $total = array_sum($counts);
+
+        return [
+            'text' => 'Analisis sentimen dari '.$total.' unggahan menunjukkan '.($counts['negatif'] ?? 0).' komentar negatif, '.($counts['netral'] ?? 0).' netral, dan '.($counts['positif'] ?? 0).' positif. Secara umum, suasana pembahasan '.$tone.'.',
+            'positif' => $counts['positif'],
+            'netral' => $counts['netral'],
+            'negatif' => $counts['negatif'],
+            'dominant' => $dominant,
+        ];
+    }
+
+    private function buildRiverDescription($river, array $sentimentSummary): string
+    {
+        $locationText = 'Sungai ini berada di wilayah '.$river->district.', '.$river->city.'.';
+        $statusText = $sentimentSummary['text'];
+
+        return $locationText.' '.$statusText;
     }
 }

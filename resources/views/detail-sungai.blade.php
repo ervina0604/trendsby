@@ -50,6 +50,15 @@ body {
 .btn-accent:hover {
     background: #0b5135;
 }
+
+.image-modal {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.image-modal.show {
+    display: flex;
+}
 </style>
 
 <section>
@@ -151,15 +160,11 @@ body {
                     </h2>
 
                     <p class="mt-5 leading-relaxed">
-
-                        Data media sosial dan hasil scraping untuk
-                        <b>{{ $sungai['nama'] }}</b>
-                        masih dalam proses pengumpulan.
-
-                        Setelah proses analisis SAW dan klasifikasi selesai,
-                        sistem akan menampilkan skor prioritas, tren pembahasan,
-                        tingkat pencemaran, serta rekomendasi penanganan otomatis.
-
+                        Ringkasan analisis sentimen untuk <b>{{ $sungai['nama'] }}</b>
+                        menunjukkan bahwa pembahasan terkait sungai ini
+                        {{ $sungai['sentiment_summary']['negatif'] > 0 ? 'didominasi oleh isyarat kekhawatiran' : 'didukung oleh informasi monitoring yang konsisten' }}.
+                        <br><br>
+                        {{ $sungai['insight'] }}
                     </p>
 
                 </div>
@@ -278,13 +283,26 @@ body {
 
                 @foreach($sungai['galleries'] as $gallery)
 
-                    <div class="glass-card overflow-hidden">
+                    <button
+                        type="button"
+                        class="glass-card overflow-hidden text-left group cursor-zoom-in"
+                        data-image="{{ $gallery['image'] }}"
+                        data-caption="{{ $gallery['caption'] ?: 'Dokumentasi sungai' }}"
+                        onclick="openImageModal(this)">
 
                         <img
                             src="{{ $gallery['image'] }}"
-                            class="w-full h-64 object-cover">
+                            alt="Dokumentasi {{ $sungai['nama'] }}"
+                            class="w-full h-64 object-cover transition duration-300 group-hover:scale-105">
 
-                    </div>
+                        <div class="p-4 border-t border-white/10">
+                            <div class="text-sm text-white/70">Klik untuk zoom</div>
+                            <div class="text-white font-semibold mt-1 line-clamp-2">
+                                {{ $gallery['caption'] ?: 'Dokumentasi sungai' }}
+                            </div>
+                        </div>
+
+                    </button>
 
                 @endforeach
 
@@ -305,10 +323,6 @@ body {
 </div>
 
 @endif
-            <p class="text-white mt-3">
-                Dokumentasi akan muncul otomatis setelah proses scraping selesai.
-            </p>
-
         </div>
 
         <div class="flex justify-between mt-12 mb-20">
@@ -317,7 +331,7 @@ body {
                 href="{{ route('peta') }}"
                 class="btn-light px-8 py-4 rounded-xl font-semibold">
 
-                ← Kembali ke Peta
+                Kembali ke Peta
 
             </a>
 
@@ -325,7 +339,7 @@ body {
                 href="{{ route('prioritas') }}"
                 class="btn-accent px-8 py-4 rounded-xl font-semibold">
 
-                Lihat Prioritas →
+                Lihat Prioritas
 
             </a>
 
@@ -335,11 +349,52 @@ body {
 
 </section>
 
+<div id="imageModal" class="image-modal fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 px-4">
+    <div class="relative w-full max-w-5xl rounded-3xl bg-white/10 p-3 shadow-2xl">
+        <button
+            type="button"
+            onclick="closeImageModal()"
+            class="absolute right-4 top-4 z-10 rounded-full bg-black/60 px-3 py-2 text-white hover:bg-black/80">
+            ✕
+        </button>
+        <img id="modalImage" src="" alt="Preview dokumentasi" class="max-h-[80vh] w-full rounded-2xl object-contain">
+        <div id="modalCaption" class="mt-3 px-2 pb-2 text-center text-white/90"></div>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
+function openImageModal(button) {
+    const modal = document.getElementById('imageModal');
+    const image = document.getElementById('modalImage');
+    const caption = document.getElementById('modalCaption');
+
+    image.src = button.dataset.image;
+    caption.textContent = button.dataset.caption;
+    modal.classList.remove('hidden');
+    modal.classList.add('show', 'flex');
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('show', 'flex');
+}
+
 document.addEventListener('DOMContentLoaded', function(){
+    document.getElementById('imageModal').addEventListener('click', function(event){
+        if (event.target === this) {
+            closeImageModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(event){
+        if (event.key === 'Escape') {
+            closeImageModal();
+        }
+    });
 
     const map = L.map('map').setView(
     [
