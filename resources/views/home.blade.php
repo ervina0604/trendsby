@@ -340,8 +340,8 @@ body{
 
         <p class="hero-subtitle mt-6">
 
-            Visualisasi data
-            untuk monitoring sungai 
+             Temukan kondisi sungai, tingkat prioritas penanganan,
+             dan dokumentasi lingkungan.
 
         </p>
 
@@ -438,10 +438,21 @@ body{
 
 <div class="grid lg:grid-cols-[1fr_420px] gap-8">
 
-    <div class="glass-card p-4">
+    <div class="glass-card p-4 relative">
+        <div class="absolute top-5 right-5 z-[999] bg-[#7EF0C8] text-[#16352C] font-semibold px-4 py-3 rounded-2xl shadow-lg">
+            📍 Klik marker untuk melihat detail sungai
+        </div>
 
-        <div id="homeMap"></div>
+        <div class="relative">
+            <input
+                id="searchRiver"
+                type="text"
+                placeholder="Cari sungai..."
+                class="absolute top-5 left-5 z-[999] w-72 px-4 py-3 rounded-2xl bg-white/10 text-white backdrop-blur-lg border border-white/10 outline-none"
+            >
 
+            <div id="homeMap" class="h-[620px] rounded-[32px] border border-white/10"></div>
+        </div>
     </div>
 
     <div class="glass-card p-7">
@@ -500,28 +511,21 @@ body{
 
         </div>
 
-        <p
-        id="riverDesc"
-        class="mt-6 text-white/70 leading-relaxed">
-
-            Klik marker pada peta untuk melihat
-            detail sungai.
-
+        <p id="riverDesc" class="mt-6 text-white/70 leading-relaxed">
+            Klik marker pada peta untuk melihat detail sungai.
         </p>
 
-        <a
-        id="detailLink"
-        href="#"
-        class="block w-full mt-8 text-center text-white py-4 rounded-2xl font-semibold border border-white/10 bg-white/10 hover:bg-white/15 transition">
-
-            Lihat Detail Sungai
-
-        </a>
-
-    </div>
-
-</div>
+        <div id="aiSummary" class="mt-5 text-sm text-[#7EF0C8]">
+            Pilih sungai untuk melihat analisis.
         </div>
+
+        <a
+            id="detailLink"
+            href="#"
+            class="block w-full mt-8 text-center text-white py-4 rounded-2xl font-semibold border border-white/10 bg-white/10 hover:bg-white/15 transition"
+        >
+            Lihat Detail Sungai
+        </a>
 
     </div>
 
@@ -532,133 +536,98 @@ body{
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-
 const rivers = @json($rivers);
 
-const map = L.map('homeMap').setView(
-    [-7.2575,112.7521],
-    11
-);
-
-L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-    attribution:'© OpenStreetMap'
-}).addTo(map);
-
-function color(status){
-
-    if(status === 'Baik')
-        return '#22c55e';
-
-    if(status === 'Perlu Perhatian')
-        return '#f59e0b';
-
-    if(status === 'Kritis')
-        return '#ef4444';
-
+function color(status) {
+    if (status === 'Baik') return '#22c55e';
+    if (status === 'Perlu Perhatian') return '#f59e0b';
+    if (status === 'Kritis') return '#ef4444';
     return '#64748b';
 }
 
-rivers.forEach(r=>{
+function formatPopup(r) {
+    return `
+<div style="width:220px">
+    <img
+        src="${r.image}"
+        style="width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:10px;"
+    >
+    <strong>${r.name}</strong>
+    <br>
+    ${r.status}
+    <br>
+    Score : <b>${r.score}%</b>
+</div>
+`;
+}
 
-    const marker = L.circleMarker(
-        [r.lat,r.lng],
-        {
-            radius:12,
-            fillColor:color(r.status),
-            color:'#fff',
-            weight:3,
-            fillOpacity:1
-        }
-    ).addTo(map);
+function setRiverDetails(r) {
+    document.getElementById('riverName').innerText = r.name;
+    document.getElementById('riverDesc').innerText = r.desc;
+    document.getElementById('riverImage').src = r.image;
+    document.getElementById('riverScore').innerText = r.score + '%';
+    document.getElementById('scoreBar').style.width = r.score + '%';
 
-    marker.on('mouseover',()=>{
+    const summary = document.getElementById('aiSummary');
+    if (r.score >= 75) {
+        summary.innerText = 'Sungai ini memiliki tingkat prioritas tinggi dan memerlukan penanganan segera.';
+    } else if (r.score >= 50) {
+        summary.innerText = 'Sungai perlu mendapatkan perhatian dan monitoring berkala.';
+    } else {
+        summary.innerText = 'Kondisi sungai relatif baik berdasarkan hasil analisis saat ini.';
+    }
 
-        marker.setStyle({
-            radius:16
-        });
+    const badge = document.getElementById('statusBadge');
+    if (r.status === 'Baik') {
+        badge.className = 'status-badge bg-green-100 text-green-700';
+        badge.innerHTML = '🟢 Baik';
+    } else if (r.status === 'Perlu Perhatian') {
+        badge.className = 'status-badge bg-yellow-100 text-yellow-800';
+        badge.innerHTML = '🟡 Perlu Perhatian';
+    } else {
+        badge.className = 'status-badge bg-red-100 text-red-800';
+        badge.innerHTML = '🔴 Kritis';
+    }
 
+    document.getElementById('detailLink').href = '/sungai/' + r.id;
+}
+
+const map = L.map('homeMap').setView([-7.2575,112.7521], 11);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+if (rivers.length > 0) {
+    setRiverDetails(rivers[0]);
+}
+
+rivers.forEach(r => {
+    const marker = L.circleMarker([r.lat, r.lng], {
+        radius: 12,
+        fillColor: color(r.status),
+        color: '#fff',
+        weight: 3,
+        fillOpacity: 1
+    }).addTo(map);
+
+    marker.bindPopup(formatPopup(r));
+
+    marker.on('mouseover', () => marker.setStyle({ radius: 16 }));
+    marker.on('mouseout', () => marker.setStyle({ radius: 12 }));
+    marker.on('click', () => {
+        map.flyTo([r.lat, r.lng], 13, { duration: 1.5 });
+        setRiverDetails(r);
     });
-
-    marker.on('mouseout',()=>{
-
-        marker.setStyle({
-            radius:12
-        });
-
-    });
-
-    marker.on('click',()=>{
-
-        map.flyTo(
-            [r.lat,r.lng],
-            13,
-            {
-                duration:1.5
-            }
-        );
-
-        document
-            .getElementById('riverName')
-            .innerText = r.name;
-
-        document
-            .getElementById('riverDesc')
-            .innerText = r.desc;
-
-        document
-            .getElementById('riverImage')
-            .src = r.image;
-
-        document
-            .getElementById('riverScore')
-            .innerText =
-                r.score + '%';
-
-        document
-            .getElementById('scoreBar')
-            .style.width =
-                r.score + '%';
-
-        const badge =
-            document.getElementById(
-                'statusBadge'
-            );
-
-        badge.innerText =
-            r.status;
-
-        if(r.status === 'Baik'){
-
-            badge.className =
-            'status-badge bg-green-100 text-green-700';
-
-        }
-
-        if(r.status === 'Perlu Perhatian'){
-
-            badge.className =
-            'status-badge bg-amber-100 text-amber-700';
-
-        }
-
-        if(r.status === 'Kritis'){
-
-            badge.className =
-            'status-badge bg-red-100 text-red-700';
-
-        }
-
-        document
-            .getElementById('detailLink')
-            .href =
-                '/sungai/' + r.id;
-
-    });
-
 });
 
+const searchInput = document.getElementById('searchRiver');
+searchInput.addEventListener('keyup', function () {
+    const keyword = this.value.toLowerCase();
+    const found = rivers.find(r => r.name.toLowerCase().includes(keyword));
+    if (found) {
+        map.flyTo([found.lat, found.lng], 13);
+    }
+});
 </script>
 
 @endsection
