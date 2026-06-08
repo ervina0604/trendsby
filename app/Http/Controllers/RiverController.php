@@ -53,8 +53,9 @@ class RiverController extends Controller
                 'lng' => $river->longitude,
 
                 'status' =>
-                    $highestScore->priority_level
-                    ?? 'Belum Dianalisis',
+                    $this->normalizePriorityLevel(
+                        $highestScore->priority_level ?? null
+                    ),
 
                 'score' =>
                     $highestScore
@@ -69,21 +70,20 @@ class RiverController extends Controller
                         $latestPost->caption ?? '-',
                         300
                     ),
+                'jumlah_galeri' => $river->galleries->count(),
+                'jumlah_post' => $river->posts->count(),
+                'galleries' => $river->galleries
+                    ->map(function ($gallery) {
+                        return [
+                            'image' => asset(
+                                'storage/' .
+                                $gallery->image_path
+                            ),
+                            'caption' => $gallery->caption,
+                        ];
+                    })
+                    ->values(),
             ],
-
-            'gallery' => $river->galleries
-                ->map(function ($gallery) {
-
-                    return [
-                        'image' => asset(
-                            'storage/' .
-                            $gallery->image_path
-                        ),
-
-                        'caption' => $gallery->caption,
-                    ];
-                })
-                ->values(),
         ]);
     }
 }

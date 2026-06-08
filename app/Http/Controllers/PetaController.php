@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RiverLocation;
+use Illuminate\Support\Str;
 
 class PetaController extends Controller
 {
@@ -25,6 +26,8 @@ class PetaController extends Controller
 
                 'id' => $river->id,
 
+                'slug' => Str::slug($river->river_name),
+
                 'name' => $river->river_name,
 
                 'lat' => $river->latitude,
@@ -36,8 +39,9 @@ class PetaController extends Controller
                     $river->city,
 
                 'status' =>
-                    $highestScore->priority_level
-                    ?? 'Belum Dianalisis',
+                    $this->normalizePriorityLevel(
+                        $highestScore->priority_level ?? null
+                    ),
 
                 'score' =>
                     $highestScore

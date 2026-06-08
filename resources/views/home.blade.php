@@ -378,15 +378,15 @@ body{
 
     <div class="metric-card">
 
-        <p>Prioritas Tinggi</p>
+<p>Kritis</p>
 
-        <h3
-        class="text-5xl font-bold mt-3"
-        style="color:#ff6b6b">
+            <h3
+            class="text-5xl font-bold mt-3"
+            style="color:#ff6b6b">
 
-            {{
-                collect($rivers)
-                ->where('status','Prioritas Tinggi')
+                {{
+                    collect($rivers)
+                    ->where('status','Kritis')
                 ->count()
             }}
 
@@ -521,25 +521,6 @@ body{
     </div>
 
 </div>
-
-            <p
-            id="riverDesc"
-            class="mt-6 text-slate-500 leading-relaxed">
-
-                Klik marker pada peta untuk melihat
-                detail sungai.
-
-            </p>
-
-            <a
-            id="detailLink"
-            href="#"
-            class="block w-full mt-8 bg-slate-900 hover:bg-slate-800 text-center text-white py-4 rounded-2xl font-semibold">
-
-                Lihat Detail Sungai
-
-            </a>
-
         </div>
 
     </div>
@@ -573,7 +554,7 @@ function color(status){
     if(status === 'Perlu Perhatian')
         return '#f59e0b';
 
-    if(status === 'Prioritas Tinggi')
+    if(status === 'Kritis')
         return '#ef4444';
 
     return '#64748b';
@@ -662,7 +643,7 @@ rivers.forEach(r=>{
 
         }
 
-        if(r.status === 'Prioritas Tinggi'){
+        if(r.status === 'Kritis'){
 
             badge.className =
             'status-badge bg-red-100 text-red-700';

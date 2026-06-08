@@ -31,8 +31,9 @@ class HomeController extends Controller
 
                 'lng' => $river->longitude,
 
-                'status' => $highestScore->priority_level
-                    ?? 'Belum Dianalisis',
+                'status' => $this->normalizePriorityLevel(
+                    $highestScore->priority_level ?? null
+                ),
 
                 'score' => $highestScore
                     ? round($highestScore->priority_value * 100, 2)

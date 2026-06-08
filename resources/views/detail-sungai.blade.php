@@ -7,13 +7,58 @@
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+<style>
+body {
+    background:
+        radial-gradient(circle at top left, rgba(126,240,200,.12), transparent 35%),
+        radial-gradient(circle at top right, rgba(255,255,255,.03), transparent 40%),
+        #2B5748;
+}
+
+.glass-card {
+    background: rgba(255,255,255,.06);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.12);
+}
+
+.text-muted {
+    color: rgba(255,255,255,.72);
+}
+
+.text-soft {
+    color: rgba(255,255,255,.85);
+}
+
+.btn-light {
+    background: rgba(255,255,255,.10);
+    color: white;
+    border: 1px solid rgba(255,255,255,.15);
+}
+
+.btn-light:hover {
+    background: rgba(255,255,255,.16);
+}
+
+.btn-accent {
+    background: #04543D;
+    color: white;
+}
+
+.btn-accent:hover {
+    background: #0b5135;
+}
+</style>
+
 <section>
 
     {{-- HERO --}}
     <div class="relative">
 
         <img
-            src="{{ asset('storage/'.$sungai['foto']) }}"
+            src="{{ $sungai['foto'] }}"
             alt="{{ $sungai['nama'] }}"
             class="w-full h-[550px] object-cover">
 
@@ -42,38 +87,38 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
         {{-- INFO CARD --}}
         <div class="grid md:grid-cols-3 gap-6">
 
-            <div class="bg-white rounded-3xl p-6 shadow-lg">
+            <div class="glass-card p-6">
 
-                <div class="text-gray-500 text-sm">
+                <div class="text-white/60 text-sm">
                     STATUS ANALISIS
                 </div>
 
-                <div class="text-3xl font-bold text-yellow-600 mt-3">
+                <div class="text-3xl font-bold text-yellow-400 mt-3">
                     {{ $sungai['status'] }}
                 </div>
 
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-lg">
+            <div class="glass-card p-6">
 
-                <div class="text-gray-500 text-sm">
+                <div class="text-white/60 text-sm">
                     KOORDINAT
                 </div>
 
-                <div class="font-bold mt-3">
+                <div class="font-bold mt-3 text-white">
                     {{ $sungai['lat'] }},
                     {{ $sungai['lng'] }}
                 </div>
 
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-lg">
+            <div class="glass-card p-6">
 
-                <div class="text-gray-500 text-sm">
+                <div class="text-white/60 text-sm">
                     KATEGORI DATA
                 </div>
 
-                <div class="font-bold mt-3 text-[#04543D]">
+                <div class="font-bold mt-3 text-[#7EF0C8]">
                     Data Sungai Surabaya
                 </div>
 
@@ -87,13 +132,13 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
             {{-- LEFT --}}
             <div class="space-y-8">
 
-                <div class="bg-white rounded-3xl shadow-lg p-8">
+                <div class="glass-card p-8">
 
-                    <h2 class="text-3xl font-bold text-[#04543D]">
+                    <h2 class="text-3xl font-bold text-white">
                         Deskripsi Sungai
                     </h2>
 
-                    <p class="text-gray-600 mt-6 leading-relaxed text-lg">
+                    <p class="text-white/75 mt-6 leading-relaxed text-lg">
                         {{ $sungai['deskripsi'] }}
                     </p>
 
@@ -119,28 +164,32 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
                 </div>
 
-                <div class="bg-white rounded-3xl shadow-lg p-8">
+                <div class="glass-card p-8">
 
-                    <h2 class="text-3xl font-bold text-[#04543D]">
+                    <h2 class="text-3xl font-bold text-white">
                         Informasi Monitoring
                     </h2>
 
-                    <div class="mt-6 space-y-4">
+                    <div class="mt-6 space-y-4 text-white/80">
 
                         <div class="flex justify-between">
                             <span>Dokumentasi Tersimpan</span>
-                            <span class="font-bold">Menunggu Scraping</span>
+                            <span class="font-bold text-white">
+                                {{ $sungai['jumlah_galeri'] }}
+                            </span>
                         </div>
 
                         <div class="flex justify-between">
                             <span>Pembahasan Media Sosial</span>
-                            <span class="font-bold">Menunggu Analisis</span>
+                            <span class="font-bold text-white">
+                                {{ $sungai['jumlah_post'] }}
+                            </span>
                         </div>
 
                         <div class="flex justify-between">
                             <span>Priority Score</span>
-                            <span class="font-bold text-yellow-600">
-                                Belum Tersedia
+                            <span class="font-bold text-yellow-400">
+                                {{ $sungai['score'] }}
                             </span>
                         </div>
 
@@ -153,7 +202,7 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
             {{-- RIGHT --}}
             <div class="space-y-8">
 
-                <div class="bg-white rounded-3xl p-5 shadow-lg">
+<div class="glass-card p-5">
 
                     <div
                         id="map"
@@ -162,50 +211,50 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
                 </div>
 
-                <div class="bg-white rounded-3xl p-8 shadow-lg">
+                <div class="glass-card p-8">
 
-                    <h3 class="text-2xl font-bold text-[#04543D]">
+                    <h3 class="text-2xl font-bold text-white">
                         Detail Lokasi
                     </h3>
 
                     <div class="mt-6 space-y-5">
 
                         <div>
-                            <div class="text-gray-500 text-sm">
+                            <div class="text-white/60 text-sm">
                                 Nama Sungai
                             </div>
 
-                            <div class="font-semibold">
+                            <div class="font-semibold text-white">
                                 {{ $sungai['nama'] }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-gray-500 text-sm">
+                            <div class="text-white/60 text-sm">
                                 Wilayah
                             </div>
 
-                            <div class="font-semibold">
+                            <div class="font-semibold text-white">
                                 {{ $sungai['lokasi'] }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-gray-500 text-sm">
+                            <div class="text-white/60 text-sm">
                                 Latitude
                             </div>
 
-                            <div class="font-semibold">
+                            <div class="font-semibold text-white">
                                 {{ $sungai['lat'] }}
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-gray-500 text-sm">
+                            <div class="text-white/60 text-sm">
                                 Longitude
                             </div>
 
-                            <div class="font-semibold">
+                            <div class="font-semibold text-white">
                                 {{ $sungai['lng'] }}
                             </div>
                         </div>
@@ -223,17 +272,40 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
             Dokumentasi
         </h2>
 
-        <div class="bg-white rounded-3xl shadow-lg p-12 text-center">
+        @if(count($sungai['galleries']) > 0)
 
-            <div class="text-6xl mb-4">
-                📷
+            <div class="grid md:grid-cols-3 gap-6">
+
+                @foreach($sungai['galleries'] as $gallery)
+
+                    <div class="glass-card overflow-hidden">
+
+                        <img
+                            src="{{ $gallery['image'] }}"
+                            class="w-full h-64 object-cover">
+
+                    </div>
+
+                @endforeach
+
             </div>
 
-            <h3 class="text-2xl font-bold">
-                Dokumentasi Belum Tersedia
-            </h3>
+@else
 
-            <p class="text-gray-500 mt-3">
+<div class="glass-card p-12 text-center">
+
+    <div class="text-6xl mb-4">
+        📷
+    </div>
+
+    <h3 class="text-2xl font-bold text-white">
+        Dokumentasi Belum Tersedia
+    </h3>
+
+</div>
+
+@endif
+            <p class="text-white mt-3">
                 Dokumentasi akan muncul otomatis setelah proses scraping selesai.
             </p>
 
@@ -243,7 +315,7 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
             <a
                 href="{{ route('peta') }}"
-                class="bg-gray-200 px-8 py-4 rounded-xl font-semibold">
+                class="btn-light px-8 py-4 rounded-xl font-semibold">
 
                 ← Kembali ke Peta
 
@@ -251,7 +323,7 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
             <a
                 href="{{ route('prioritas') }}"
-                class="bg-[#04543D] text-white px-8 py-4 rounded-xl font-semibold">
+                class="btn-accent px-8 py-4 rounded-xl font-semibold">
 
                 Lihat Prioritas →
 

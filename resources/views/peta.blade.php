@@ -317,7 +317,7 @@ body{
 
         {{
             collect($rivers)
-            ->where('status','Prioritas Tinggi')
+            ->where('status','Kritis')
             ->count()
         }}
 
@@ -462,7 +462,7 @@ body{
                     </span>
 
                     <span>
-                        Prioritas Tinggi
+                        Kritis
                     </span>
 
                 </div>
@@ -739,6 +739,8 @@ body{
 </a>
 
 </div>
+</div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -754,6 +756,8 @@ const riverLocation = document.getElementById('riverLocation');
 
 const galleryCount = document.getElementById('galleryCount');
 const statusText = document.getElementById('statusText');
+
+const detailBaseUrl = "{{ url('/sungai') }}";
 
 const plastikVal = document.getElementById('plastikVal');
 const sedimenVal = document.getElementById('sedimenVal');
@@ -825,7 +829,7 @@ function updatePanel(river){
             river.image;
 
     detailBtn.href =
-        '/sungai/' + river.id;
+        detailBaseUrl + '/' + river.slug;
 }
 
 if(rivers.length > 0){

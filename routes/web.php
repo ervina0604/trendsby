@@ -3,11 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RiverController;
+use App\Http\Controllers\PrioritasController;
+use App\Http\Controllers\PetaController;
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
-
-use App\Http\Controllers\PetaController;
 
 Route::get(
     '/peta',
@@ -15,9 +15,8 @@ Route::get(
 )->name('peta');
 
 
-Route::get('/prioritas-sungai', function () {
-    return view('prioritas');
-})->name('prioritas');
+Route::get('/prioritas-sungai', [PrioritasController::class, 'index'])
+    ->name('prioritas');
 
 Route::get('/tentang', function () {
     return view('tentang');
