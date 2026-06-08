@@ -7,9 +7,13 @@ use App\Http\Controllers\RiverController;
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
-Route::get('/peta', function () {
-    return view('peta');
-})->name('peta');
+use App\Http\Controllers\PetaController;
+
+Route::get(
+    '/peta',
+    [PetaController::class, 'index']
+)->name('peta');
+
 
 Route::get('/prioritas-sungai', function () {
     return view('prioritas');

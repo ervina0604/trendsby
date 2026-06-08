@@ -9,265 +9,506 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 
+body{
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(126,240,200,.12),
+            transparent 35%
+        ),
+        #2B5748;
+}
+
+/* MAP */
+
 #map{
     height:850px;
     width:100%;
+    border-radius:32px;
 }
+
+/* CARD */
 
 .map-card{
+
     overflow:hidden;
+
     border-radius:32px;
-    background:white;
-    box-shadow:0 20px 50px rgba(0,0,0,.08);
+
+    background:
+        rgba(255,255,255,.06);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.15);
 }
+
+/* SIDEBAR */
+
+.sidebar-panel{
+
+    background:
+        rgba(255,255,255,.04);
+
+    backdrop-filter:
+        blur(18px);
+
+    border-left:
+        1px solid rgba(255,255,255,.08);
+}
+
+/* POPUP */
 
 .leaflet-popup-content-wrapper{
+
     border-radius:18px;
+
+    background:
+        rgba(43,87,72,.95);
+
+    color:white;
 }
 
-.leaflet-popup-content{
-    font-family:Manrope,sans-serif;
+.leaflet-popup-tip{
+    background:#2B5748;
 }
 
-.legend-box{
-    background:white;
-    padding:14px;
-    border-radius:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.12);
-}
+/* SEARCH */
 
 .search-box{
+
     position:absolute;
+
     top:20px;
     left:70px;
+
     z-index:999;
-    background:white;
-    border-radius:14px;
-    padding:12px;
-    width:280px;
-    box-shadow:0 8px 20px rgba(0,0,0,.1);
+
+    width:320px;
+
+    padding:14px;
+
+    border-radius:18px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    backdrop-filter:
+        blur(16px);
+
+    border:
+        1px solid rgba(255,255,255,.10);
 }
 
-.info-card{
-    background:#f8fafc;
-    border-radius:18px;
+.search-box input{
+
+    background:
+        rgba(255,255,255,.06);
+
+    border:
+        1px solid rgba(255,255,255,.10);
+
+    color:white;
+}
+
+.search-box input::placeholder{
+    color:rgba(255,255,255,.55);
+}
+
+/* LEGEND */
+
+.legend-box{
+
+    background:
+        rgba(255,255,255,.08);
+
+    backdrop-filter:
+        blur(16px);
+
+    color:white;
+
     padding:18px;
+
+    border-radius:18px;
+
+    border:
+        1px solid rgba(255,255,255,.10);
+}
+
+/* INFO CARD */
+
+.info-card{
+
+    background:
+        rgba(255,255,255,.06);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:
+        blur(12px);
+
+    border-radius:22px;
+
+    color:white;
+
+    transition:.3s ease;
+}
+
+.info-card:hover{
+
+    transform:translateY(-4px);
+
+    background:
+        rgba(255,255,255,.10);
+}
+
+/* TEXT */
+
+.page-label{
+
+    color:#7EF0C8;
+}
+
+.page-title{
+
+    color:white;
+
+    text-shadow:
+        0 0 30px rgba(126,240,200,.15);
+}
+
+.page-desc{
+
+    color:
+        rgba(255,255,255,.70);
+}
+
+/* DETAIL */
+
+#riverName{
+    color:white;
+}
+
+#riverLocation{
+    color:
+        rgba(255,255,255,.60);
+}
+
+#riverStatus{
+    color:#7EF0C8;
+}
+
+#riverDesc{
+    color:
+        rgba(255,255,255,.70);
+}
+
+#riverScore{
+    color:#7EF0C8;
+}
+
+/* BUTTON */
+
+#detailBtn{
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+
+    backdrop-filter:
+        blur(14px);
+
+    color:white;
+
+    transition:.3s;
+}
+
+#detailBtn:hover{
+
+    background:
+        rgba(255,255,255,.15);
+}
+
+/* IMAGE */
+
+#riverImage{
+
+    border:
+        1px solid rgba(255,255,255,.10);
+}
+
+/* LEAFLET CONTROL */
+
+.leaflet-control-zoom{
+
+    border:none !important;
+}
+
+.leaflet-control-zoom a{
+
+    background:
+        rgba(43,87,72,.95) !important;
+
+    color:white !important;
+
+    border:none !important;
 }
 
 </style>
 
-<section class="max-w-[1700px] mx-auto px-6 pb-16">
+<section class="max-w-7xl mx-auto px-6 py-10">
 
-    <div class="mb-10">
+<div class="mb-10">
 
-        <span class="uppercase tracking-[4px] text-sm font-bold text-[#0B5B94]">
-            Dashboard Monitoring
-        </span>
+<span class="page-label uppercase tracking-[4px] text-sm font-bold">
+    Dashboard Monitoring
+</span>
 
-        <h1 class="text-5xl font-extrabold text-[#063A67] mt-3">
-            Peta Interaktif Sungai Surabaya
-        </h1>
+<h1 class="page-title text-6xl font-extrabold mt-3 leading-tight">
 
-        <p class="text-slate-500 text-lg mt-4 max-w-3xl">
-            Visualisasi kondisi sungai berdasarkan hasil analisis media sosial,
-            dokumentasi visual, dan pemantauan lingkungan.
-        </p>
+    Peta Interaktif
+
+    <span class="text-[#7EF0C8]">
+        Sungai Surabaya
+    </span>
+
+</h1>
+
+<p class="page-desc text-xl mt-5 max-w-3xl leading-relaxed">
+
+    Pantau kondisi sungai Surabaya 
+
+</p>
+
+</div>
+
+<div class="grid md:grid-cols-4 gap-5 mb-10">
+
+<div class="info-card p-5">
+
+    <div class="text-sm opacity-70">
+        Total Sungai
+    </div>
+
+    <div class="text-4xl font-bold mt-2">
+        {{ count($rivers) }}
+    </div>
+
+</div>
+
+<div class="info-card p-5">
+
+    <div class="text-sm opacity-70">
+        Prioritas Tinggi
+    </div>
+
+    <div class="text-4xl font-bold mt-2 text-red-400">
+
+        {{
+            collect($rivers)
+            ->where('status','Prioritas Tinggi')
+            ->count()
+        }}
 
     </div>
 
-    <div class="map-card">
+</div>
 
-        <div class="grid lg:grid-cols-[1fr_400px]">
+<div class="info-card p-5">
 
-            {{-- MAP --}}
-            <div class="relative">
+    <div class="text-sm opacity-70">
+        Perlu Perhatian
+    </div>
 
-                <div class="search-box">
+    <div class="text-4xl font-bold mt-2 text-yellow-300">
 
-                    <input
+        {{
+            collect($rivers)
+            ->where('status','Perlu Perhatian')
+            ->count()
+        }}
+
+    </div>
+
+</div>
+
+<div class="info-card p-5">
+
+    <div class="text-sm opacity-70">
+        Kondisi Baik
+    </div>
+
+    <div class="text-4xl font-bold mt-2 text-green-300">
+
+        {{
+            collect($rivers)
+            ->where('status','Baik')
+            ->count()
+        }}
+
+    </div>
+
+</div>
+
+</div>
+
+
+<div class="map-card">
+
+
+<div class="grid lg:grid-cols-[1fr_420px]">
+
+    {{-- MAP --}}
+    <div class="relative">
+
+        {{-- SEARCH --}}
+        <div class="search-box">
+
+            <div class="flex items-center gap-3">
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5 text-white/60"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 105.5 5.5a7.5 7.5 0 0011.15 11.15z"/>
+
+                </svg>
+
+                <input
                     id="searchRiver"
                     type="text"
                     placeholder="Cari sungai..."
-                    class="w-full border rounded-xl px-4 py-3 outline-none">
+                    class="w-full bg-transparent outline-none">
+
+            </div>
+
+        </div>
+
+        {{-- MAP HEADER --}}
+        <div
+            class="absolute top-5 right-5 z-[999]
+            px-5 py-3 rounded-2xl
+            bg-white/10 backdrop-blur-lg
+            border border-white/10">
+
+            <div class="text-white text-xs uppercase tracking-widest opacity-60">
+                Monitoring AI
+            </div>
+
+            <div class="text-white font-bold mt-1">
+    {{ count($rivers) }} Sungai Terpantau
+</div>
+
+        </div>
+
+        <div id="map"></div>
+
+        {{-- LEGEND --}}
+        <div
+            class="absolute bottom-5 left-5 z-[999] legend-box">
+
+            <div class="text-sm uppercase tracking-widest opacity-70 mb-3">
+                Status Sungai
+            </div>
+
+            <div class="space-y-3">
+
+                <div class="flex items-center gap-3">
+
+                    <span
+                        class="w-3 h-3 rounded-full bg-green-500">
+                    </span>
+
+                    <span>
+                        Baik
+                    </span>
 
                 </div>
 
-                <div id="map"></div>
+                <div class="flex items-center gap-3">
 
-                <div class="absolute bottom-5 left-5 z-[999] legend-box">
+                    <span
+                        class="w-3 h-3 rounded-full bg-yellow-400">
+                    </span>
 
-                    <h4 class="font-bold mb-3">
-                        Kondisi Sungai
-                    </h4>
-
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="w-4 h-4 rounded-full bg-green-600"></span>
-                        Baik
-                    </div>
-
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="w-4 h-4 rounded-full bg-yellow-500"></span>
+                    <span>
                         Perlu Perhatian
-                    </div>
+                    </span>
 
-                    <div class="flex items-center gap-2">
-                        <span class="w-4 h-4 rounded-full bg-red-600"></span>
+                </div>
+
+                <div class="flex items-center gap-3">
+
+                    <span
+                        class="w-3 h-3 rounded-full bg-red-500">
+                    </span>
+
+                    <span>
                         Prioritas Tinggi
-                    </div>
+                    </span>
 
                 </div>
 
             </div>
 
-            {{-- SIDEBAR --}}
-            <div class="bg-white border-l p-6">
+        </div>
 
-                <img
-                id="riverImage"
-                src="{{ asset('storage/home-sungai.png') }}"
-                class="rounded-2xl h-[220px] w-full object-cover">
+        {{-- QUICK INFO --}}
+        <div
+            class="absolute bottom-5 right-5 z-[999]
+            flex gap-4">
 
-                <div class="mt-5 flex justify-between items-start">
+            <div
+                class="bg-white/10 backdrop-blur-lg
+                border border-white/10
+                rounded-2xl px-5 py-4">
 
-                    <div>
-
-                        <h2
-                        id="riverName"
-                        class="text-4xl font-bold text-[#04543D]">
-                            Kalimas
-                        </h2>
-
-                        <p
-                        id="riverLocation"
-                        class="text-gray-500">
-                            Surabaya, Jawa Timur
-                        </p>
-
-                    </div>
-
-                    <div>
-
-                        <div
-                        id="riverScore"
-                        class="text-red-600 text-5xl font-bold">
-                            72
-                        </div>
-
-                        <div>/100</div>
-
-                    </div>
-
+                <div class="text-white/60 text-xs">
+                    Total Sungai
                 </div>
 
-                <div class="info-card mt-6">
-
-                    <div class="flex justify-between">
-
-                        <div>
-
-                            <div class="text-sm text-gray-500">
-                                Status
-                            </div>
-
-                            <div
-                            id="riverStatus"
-                            class="font-bold text-red-600">
-                                Prioritas Tinggi
-                            </div>
-
-                        </div>
-
-                        <div>
-
-                            <div class="text-sm text-gray-500">
-                                Dokumentasi
-                            </div>
-
-                            <div class="font-bold">
-                                147
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <p
-                    id="riverDesc"
-                    class="text-gray-600 mt-4">
-                        Klik salah satu titik sungai untuk melihat detail.
-                    </p>
-
+                <div class="text-white text-2xl font-bold">
+                    {{ count($rivers) }}
                 </div>
 
-                <div class="mt-8 space-y-6">
+            </div>
 
-                    <div>
+            <div
+                class="bg-white/10 backdrop-blur-lg
+                border border-white/10
+                rounded-2xl px-5 py-4">
 
-                        <div class="flex justify-between mb-2">
-                            <span>Sampah Plastik</span>
-                            <span id="plastikVal">85%</span>
-                        </div>
-
-                        <div class="bg-gray-200 h-2 rounded-full">
-
-                            <div
-                            id="plastikBar"
-                            class="bg-red-600 h-2 rounded-full"
-                            style="width:85%">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <div class="flex justify-between mb-2">
-                            <span>Air Keruh</span>
-                            <span id="sedimenVal">60%</span>
-                        </div>
-
-                        <div class="bg-gray-200 h-2 rounded-full">
-
-                            <div
-                            id="sedimenBar"
-                            class="bg-yellow-500 h-2 rounded-full"
-                            style="width:60%">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <div class="flex justify-between mb-2">
-                            <span>Limbah Kimia</span>
-                            <span id="kimiaVal">32%</span>
-                        </div>
-
-                        <div class="bg-gray-200 h-2 rounded-full">
-
-                            <div
-                            id="kimiaBar"
-                            class="bg-green-700 h-2 rounded-full"
-                            style="width:32%">
-                            </div>
-
-                        </div>
-
-                    </div>
-
+                <div class="text-white/60 text-xs">
+                    Prioritas Tinggi
                 </div>
 
-                <a
-                id="detailBtn"
-                href="#"
-                class="mt-10 block text-center bg-[#04543D] hover:bg-[#023b2b] text-white py-4 rounded-xl font-bold">
+                <div class="text-red-300 text-2xl font-bold">
 
-                    Lihat Detail →
+                    {{
+                        collect($rivers)
+                        ->where('status','Prioritas Tinggi')
+                        ->count()
+                    }}
 
-                </a>
+                </div>
 
             </div>
 
@@ -275,16 +516,244 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     </div>
 
-</section>
+
+{{-- SIDEBAR --}}
+
+<div class="sidebar-panel p-7">
+
+<img
+    id="riverImage"
+    src="{{ asset('storage/home-sungai.png') }}"
+    class="rounded-3xl h-[250px] w-full object-cover">
+
+<div class="mt-6">
+
+    <div
+        id="riverStatus"
+        class="inline-flex items-center px-4 py-2 rounded-full
+        bg-white/10 border border-white/10
+        text-sm text-[#7EF0C8] font-semibold">
+
+        Belum Dianalisis
+
+    </div>
+
+    <h2
+        id="riverName"
+        class="text-4xl font-bold text-white mt-4">
+
+        Pilih Sungai
+
+    </h2>
+
+    <p
+        id="riverLocation"
+        class="text-white/60 mt-2">
+
+        Surabaya
+
+    </p>
+
+</div>
+
+{{-- SCORE CARD --}}
+<div class="info-card mt-6 p-5">
+
+    <div class="flex justify-between items-center">
+
+        <div>
+
+            <div class="text-white/60 text-sm">
+                Risk Score
+            </div>
+
+            <div
+                id="riverScore"
+                class="text-5xl font-bold text-[#7EF0C8] mt-2">
+
+                0
+
+            </div>
+
+        </div>
+
+        <div
+            class="w-16 h-16 rounded-2xl
+            bg-white/10 flex items-center justify-center">
+
+            <span class="text-white/50">
+                /100
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{-- INFO --}}
+<div class="info-card mt-5 p-5">
+
+    <div class="grid grid-cols-2 gap-4">
+
+        <div>
+
+            <div class="text-white/50 text-xs uppercase">
+                Dokumentasi
+            </div>
+
+            <div
+                id="galleryCount"
+                class="text-2xl font-bold mt-2">
+
+                0
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="text-white/50 text-xs uppercase">
+                Status
+            </div>
+
+            <div
+                class="font-semibold mt-2"
+                id="statusText">
+
+                -
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        id="riverDesc"
+        class="mt-5 text-white/70 leading-relaxed">
+
+        Klik salah satu titik sungai
+        pada peta untuk melihat detail.
+
+    </div>
+
+</div>
+
+{{-- ANALISIS --}}
+<div class="info-card mt-5 p-5">
+
+    <div class="font-semibold mb-5">
+        Analisis Lingkungan
+    </div>
+
+    <div class="space-y-5">
+
+        <div>
+
+            <div class="flex justify-between text-sm mb-2">
+
+                <span>Sampah Plastik</span>
+
+                <span id="plastikVal">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress-bg h-2 rounded-full">
+
+                <div
+                    id="plastikBar"
+                    class="h-2 rounded-full bg-red-500"
+                    style="width:0%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="flex justify-between text-sm mb-2">
+
+                <span>Air Keruh</span>
+
+                <span id="sedimenVal">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress-bg h-2 rounded-full">
+
+                <div
+                    id="sedimenBar"
+                    class="h-2 rounded-full bg-yellow-500"
+                    style="width:0%">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div>
+
+            <div class="flex justify-between text-sm mb-2">
+
+                <span>Limbah Kimia</span>
+
+                <span id="kimiaVal">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress-bg h-2 rounded-full">
+
+                <div
+                    id="kimiaBar"
+                    class="h-2 rounded-full bg-green-500"
+                    style="width:0%">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<a
+    id="detailBtn"
+    href="#"
+    class="mt-6 block text-center py-4 rounded-2xl font-bold
+    bg-[#7EF0C8] text-[#16352C]
+    hover:scale-[1.02]
+    transition-all">
+
+    Lihat Detail Sungai →
+
+</a>
+
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
 
+const rivers = @json($rivers);
+
 const riverName = document.getElementById('riverName');
 const riverScore = document.getElementById('riverScore');
 const riverStatus = document.getElementById('riverStatus');
 const riverDesc = document.getElementById('riverDesc');
+const riverLocation = document.getElementById('riverLocation');
+
+const galleryCount = document.getElementById('galleryCount');
+const statusText = document.getElementById('statusText');
 
 const plastikVal = document.getElementById('plastikVal');
 const sedimenVal = document.getElementById('sedimenVal');
@@ -296,108 +765,159 @@ const kimiaBar = document.getElementById('kimiaBar');
 
 const detailBtn = document.getElementById('detailBtn');
 
-const map = L.map('map').setView([-7.2575,112.7521],11);
+const map = L.map('map').setView(
+    [-7.2575, 112.7521],
+    11
+);
 
 L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{
-attribution:'© OpenStreetMap'
-}
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+        attribution:'© OpenStreetMap'
+    }
 ).addTo(map);
 
 function markerColor(score){
-    if(score >= 75) return "#dc2626";
-    if(score >= 50) return "#f59e0b";
-    return "#16a34a";
+
+    if(score >= 75){
+        return '#dc2626';
+    }
+
+    if(score >= 50){
+        return '#f59e0b';
+    }
+
+    return '#16a34a';
 }
 
-const rivers = [
-{name:'Kalimas',lat:-7.204056,lng:112.736528,score:72,status:'Perlu Perhatian',plastik:85,sedimen:60,kimia:32,desc:'Sungai utama dan bersejarah di Surabaya.'},
-{name:'Jagir',lat:-7.304694,lng:112.844556,score:80,status:'Prioritas Tinggi',plastik:90,sedimen:70,kimia:40,desc:'Sungai pengendali banjir wilayah timur.'},
-{name:'Kalianak',lat:-7.222750,lng:112.706250,score:81,status:'Prioritas Tinggi',plastik:92,sedimen:76,kimia:42,desc:'Terdampak aktivitas industri.'},
-{name:'Greges',lat:-7.225667,lng:112.685917,score:84,status:'Prioritas Tinggi',plastik:93,sedimen:80,kimia:45,desc:'Kawasan padat industri.'},
-{name:'Keputih',lat:-7.299056,lng:112.845972,score:40,status:'Baik',plastik:35,sedimen:30,kimia:10,desc:'Dekat kawasan konservasi mangrove.'}
-];
-
-let markers=[];
+let markers = [];
 
 function updatePanel(river){
 
-    riverName.innerText = river.name;
-    riverScore.innerText = river.score;
-    riverStatus.innerText = river.status;
-    riverDesc.innerText = river.desc;
+    riverName.innerText =
+        river.name ?? '-';
 
-    plastikVal.innerText = river.plastik+'%';
-    sedimenVal.innerText = river.sedimen+'%';
-    kimiaVal.innerText = river.kimia+'%';
+    riverLocation.innerText =
+        river.location ?? '-';
 
-    plastikBar.style.width = river.plastik+'%';
-    sedimenBar.style.width = river.sedimen+'%';
-    kimiaBar.style.width = river.kimia+'%';
+    riverScore.innerText =
+        river.score ?? 0;
 
+    riverStatus.innerText =
+        river.status ?? '-';
+
+    riverDesc.innerText =
+        river.desc ?? '-';
+
+    if(statusText){
+        statusText.innerText =
+            river.status ?? '-';
+    }
+
+    if(galleryCount){
+        galleryCount.innerText =
+            river.gallery_count ?? 0;
+    }
+
+    document
+        .getElementById('riverImage')
+        .src =
+            river.image;
+
+    detailBtn.href =
+        '/sungai/' + river.id;
 }
 
-rivers.forEach(river=>{
+if(rivers.length > 0){
+    updatePanel(rivers[0]);
+}
+
+rivers.forEach(river => {
 
     const marker = L.circleMarker(
-    [river.lat,river.lng],
-    {
-        radius:10,
-        fillColor:markerColor(river.score),
-        color:'#fff',
-        weight:3,
-        fillOpacity:1
-    }).addTo(map);
+        [river.lat, river.lng],
+        {
+            radius:10,
+            fillColor:markerColor(river.score),
+            color:'#fff',
+            weight:3,
+            fillOpacity:1
+        }
+    ).addTo(map);
 
     marker.bindPopup(`
-        <strong>${river.name}</strong><br>
-        ${river.status}<br>
-        Skor ${river.score}/100
+        <div style="width:220px">
+
+            <img
+                src="${river.image}"
+                style="
+                    width:100%;
+                    height:120px;
+                    object-fit:cover;
+                    border-radius:12px;
+                    margin-bottom:10px;
+                ">
+
+            <strong>${river.name}</strong><br>
+
+            <span>${river.status}</span>
+
+            <br>
+
+            Score :
+            <b>${river.score}%</b>
+
+        </div>
     `);
 
-    marker.on('click',()=>{
+    marker.on('click', () => {
 
         updatePanel(river);
 
         map.flyTo(
-        [river.lat,river.lng],
-        13,
-        {duration:1.5}
+            [river.lat, river.lng],
+            13,
+            {
+                duration:1.5
+            }
         );
 
     });
 
     markers.push({
-        name:river.name.toLowerCase(),
-        marker:marker,
-        data:river
+        name: river.name.toLowerCase(),
+        marker: marker,
+        data: river
     });
 
 });
 
 document
 .getElementById('searchRiver')
-.addEventListener('keyup',function(){
+.addEventListener('keyup', function(){
 
-    const keyword=this.value.toLowerCase();
+    const keyword =
+        this.value.toLowerCase();
 
-    markers.forEach(item=>{
+    const found =
+        markers.find(item =>
+            item.name.includes(keyword)
+        );
 
-        if(item.name.includes(keyword)){
+    if(found){
 
-            map.flyTo(
-            [item.data.lat,item.data.lng],
+        map.flyTo(
+            [
+                found.data.lat,
+                found.data.lng
+            ],
             13
-            );
+        );
 
-            item.marker.openPopup();
+        found.marker.openPopup();
 
-            updatePanel(item.data);
-
-        }
-
-    });
+        updatePanel(found.data);
+    }
 
 });
 
