@@ -11,79 +11,75 @@ use Illuminate\Console\Command;
 class AnalyzePosts extends Command
 {
     protected $signature = 'ai:analyze';
-
     protected $description = 'Analisis Sentiment IndoBERT dan CLIP';
 
     public function handle(AIService $ai)
-    {
-        $this->info("Memulai analisis AI...");
+{
+    $this->info("Memulai analisis AI...");
 
-        $total = 0;
-
-        Post::with([
-            'images',
-            'sentimentAnalysis',
-            'imageCaptionAnalysis'
-        ])
+    Post::with(['sentimentAnalysis', 'imageCaptionAnalyses', 'images'])
         ->where('is_river_related', true)
-        ->chunk(100, function ($posts) use ($ai, &$total) {
+        ->chunk(100, function ($posts) use ($ai) {
 
             foreach ($posts as $post) {
-                try {
-                    $sentiment = $ai->analyzeSentiment($post->caption ?? '');
 
-                    SentimentAnalysis::updateOrCreate(
-                        ['post_id' => $post->id],
+                // 1. SENTIMENT
+                $sentiment = $ai->analyzeSentiment($post->caption ?? '');
+
+                SentimentAnalysis::updateOrCreate(
+                    ['post_id' => $post->id],
+                    [
+                        'sentiment_label' => $sentiment['sentiment'] ?? 'neutral',
+                        'sentiment_score' => $sentiment['score'] ?? 0,
+                        'model_name' => 'w11wo/indonesian-roberta-base-sentiment-classifier',
+                        'model_version' => '1.0',
+                        'analyzed_at' => now(),
+                    ]
+                );
+
+                // 2. SKIP IF NO IMAGE
+                if ($post->images->isEmpty()) {
+                    $this->line("Skip (no images) Post ID: {$post->id}");
+                    continue;
+                }
+
+                foreach ($post->images as $image) {
+
+                    $fullPath = storage_path('app/' . $image->local_image_path);
+
+                    if (!file_exists($fullPath)) {
+                        $this->warn("Image missing: Post ID {$post->id}");
+                        continue;
+                    }
+
+                    // 3. CEK DUPLICATE
+                    $exists = ImageCaptionAnalysis::where('post_id', $post->id)
+                        ->where('image_id', $image->id)
+                        ->exists();
+
+                    if ($exists) continue;
+
+                    // 4. CLIP ANALYSIS
+                    $clip = $ai->analyzeClip($fullPath, $post->caption ?? '');
+
+                    ImageCaptionAnalysis::updateOrCreate(
                         [
-                            'sentiment_label' => $sentiment['sentiment'] ?? 'neutral',
-                            'sentiment_score' => $sentiment['score'] ?? 0,
-                            'model_name' => 'indobert-sentiment',
+                            'post_id' => $post->id,
+                            'image_id' => $image->id,
+                        ],
+                        [
+                            'relevance_score' => $clip['similarity_score'] ?? 0,
+                            'model_name' => 'openai/clip-vit-base-patch32',
                             'model_version' => '1.0',
                             'analyzed_at' => now(),
                         ]
                     );
-
-                } catch (\Exception $e) {
-                    $this->error("Sentiment gagal ID {$post->id}: {$e->getMessage()}");
                 }
 
-                $image = $post->images->first();
-
-                if ($image) {
-
-                    $fullPath = storage_path('app/' . $image->local_image_path);
-
-                    if (file_exists($fullPath)) {
-
-                        try {
-                            $clip = $ai->analyzeClip(
-                                $fullPath,
-                                $post->caption ?? ''
-                            );
-
-                            ImageCaptionAnalysis::updateOrCreate(
-                                ['post_id' => $post->id],
-                                [
-                                    'relevance_score' => $clip['similarity_score'] ?? 0,
-                                    'model_name' => 'clip-vit-base-patch32',
-                                    'model_version' => '1.0',
-                                    'analyzed_at' => now(),
-                                ]
-                            );
-
-                        } catch (\Exception $e) {
-                            $this->warn("CLIP gagal ID {$post->id}: {$e->getMessage()}");
-                        }
-                    }
-                }
-
-                $total++;
+                $this->line("Processed Post ID: {$post->id}");
             }
         });
 
-        $this->newLine();
-        $this->info("Analisis selesai. Total diproses: {$total}");
-
-        return Command::SUCCESS;
-    }
+    $this->info("Analisis selesai.");
+}
 }

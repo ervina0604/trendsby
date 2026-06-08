@@ -42,24 +42,18 @@ class Post extends Model
         );
     }
 
-    public function sentimentAnalysis()
-    {
-        return $this->hasOne(
-            SentimentAnalysis::class
-        );
-    }
+   public function sentimentAnalysis()
+{
+    return $this->hasOne(SentimentAnalysis::class, 'post_id');
+}
 
-    public function imageCaptionAnalysis()
-    {
-        return $this->hasOne(
-            ImageCaptionAnalysis::class
-        );
-    }
+public function imageCaptionAnalyses()
+{
+    return $this->hasMany(ImageCaptionAnalysis::class, 'post_id');
+}
 
-    public function images()
-    {
-        return $this->hasMany(
-            PostImage::class
-        );
-    }
+public function images()
+{
+    return $this->hasMany(PostImage::class, 'post_id');
+}
 }

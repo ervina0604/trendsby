@@ -13,39 +13,29 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('location_id')
-                  ->nullable()
-                  ->constrained('river_locations')
-                  ->nullOnDelete();
+                ->nullable()
+                ->constrained('river_locations')
+                ->nullOnDelete();
 
-            $table->string('instagram_post_id')
-                  ->nullable();
+            $table->string('instagram_post_id')->nullable();
 
-            $table->longText('caption')
-                  ->nullable();
+            $table->longText('caption')->nullable();
 
-            $table->string('post_url')
-                  ->nullable();
+            $table->string('post_url')->nullable();
 
-            $table->string('username')
-                  ->nullable();
+            $table->string('username')->nullable();
 
-            $table->integer('likes_count')
-                  ->default(0);
+            $table->integer('likes_count')->default(0);
 
-            $table->integer('comments_count')
-                  ->default(0);
+            $table->integer('comments_count')->default(0);
 
-            $table->timestamp('upload_date')
-                  ->nullable();
+            $table->timestamp('upload_date')->nullable();
 
-            $table->timestamp('scraped_at')
-                  ->nullable();
+            $table->timestamp('scraped_at')->nullable();
 
-            $table->boolean('is_river_related')
-                  ->default(false);
+            $table->boolean('is_river_related')->default(false);
 
-            $table->string('detected_river')
-                  ->nullable();
+            $table->string('detected_river')->nullable();
 
             $table->timestamps();
         });

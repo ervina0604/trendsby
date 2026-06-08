@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Post;
+use App\Models\RiverLocation;
 use App\Services\RiverDetector;
 use Illuminate\Console\Command;
 
@@ -16,27 +17,35 @@ class DetectRiverPosts extends Command
     {
         $total = 0;
 
-        Post::chunkById(200, function ($posts) use (&$total) {
+        Post::with('location')
+            ->chunkById(200, function ($posts) use (&$total) {
 
-            foreach ($posts as $post) {
+                foreach ($posts as $post) {
 
-                $result = RiverDetector::detect($post->caption ?? '');
+                    $result = RiverDetector::detect($post->caption ?? '');
 
-                $river = $result['river'] ?? null;
+                    $river = $result['river'] ?? null;
+                    $isRiverRelated = (bool) ($result['is_river_related'] ?? false);
 
-                $isRiverRelated = $result['is_river_related'] ?? false;
+                    $locationId = null;
+                    $riverName = null;
 
-                $post->update([
-                    'is_river_related' => $isRiverRelated,
-                    'detected_river'   => $river?->river_name,
-                    'location_id'      => $river?->id,
-                ]);
+                    if ($river instanceof RiverLocation) {
+                        $locationId = $river->id;
+                        $riverName = $river->river_name;
+                    }
 
-                if ($isRiverRelated) {
-                    $total++;
+                    $post->update([
+                        'is_river_related' => $isRiverRelated,
+                        'detected_river'   => $riverName,
+                        'location_id'      => $locationId,
+                    ]);
+
+                    if ($isRiverRelated) {
+                        $total++;
+                    }
                 }
-            }
-        });
+            });
 
         $this->info("Deteksi sungai selesai. {$total} post terdeteksi terkait sungai.");
 

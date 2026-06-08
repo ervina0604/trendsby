@@ -8,7 +8,7 @@ class RiverDetector
 {
     public static function detect(?string $caption): array
     {
-        if (!$caption) {
+        if (empty($caption)) {
             return [
                 'is_river_related' => false,
                 'river' => null
@@ -19,12 +19,13 @@ class RiverDetector
 
         foreach (RiverLocation::all() as $river) {
 
-            $name = strtolower(
-                str_replace('sungai ', '', $river->river_name)
-            );
+            $riverName = strtolower($river->river_name);
+            $shortName = strtolower(str_replace('sungai ', '', $riverName));
 
-            if (str_contains($text, $name)) {
-
+            if (
+                str_contains($text, $riverName) ||
+                str_contains($text, $shortName)
+            ) {
                 return [
                     'is_river_related' => true,
                     'river' => $river
@@ -32,51 +33,35 @@ class RiverDetector
             }
         }
 
-        $riverWords = [
-            'sungai',
-            'kali',
-            'bantaran',
-            'das',
-            'daerah aliran sungai'
+        $riverKeywords = [
+            'sungai', 'kali', 'bantaran', 'das'
         ];
 
-        $conditionWords = [
-            'banjir',
-            'limbah',
-            'tercemar',
-            'pencemaran',
-            'sampah',
-            'plastik',
-            'mikroplastik',
-            'sedimentasi',
-            'pendangkalan',
-            'normalisasi',
-            'air keruh',
-            'air hitam',
-            'bau',
-            'ekosistem'
+        $problemKeywords = [
+            'banjir', 'limbah', 'sampah', 'plastik',
+            'tercemar', 'pencemaran', 'bau', 'keruh',
+            'pendangkalan', 'sedimentasi', 'ekosistem'
         ];
 
-        $hasRiverWord = false;
+        $hasRiverContext = false;
+        $hasProblem = false;
 
-        foreach ($riverWords as $word) {
+        foreach ($riverKeywords as $word) {
             if (str_contains($text, $word)) {
-                $hasRiverWord = true;
+                $hasRiverContext = true;
                 break;
             }
         }
 
-        $hasConditionWord = false;
-
-        foreach ($conditionWords as $word) {
+        foreach ($problemKeywords as $word) {
             if (str_contains($text, $word)) {
-                $hasConditionWord = true;
+                $hasProblem = true;
                 break;
             }
         }
 
-        if ($hasRiverWord && $hasConditionWord) {
-
+        // hanya dianggap river-related kalau ADA konteks sungai + isu
+        if ($hasRiverContext && $hasProblem) {
             return [
                 'is_river_related' => true,
                 'river' => null
