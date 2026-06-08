@@ -84,43 +84,52 @@ body{
 /* SEARCH */
 
 .search-box{
-
     position:absolute;
-
     top:20px;
     left:70px;
-
     z-index:999;
-
     width:320px;
-
     padding:14px;
-
     border-radius:18px;
-
-    background:
-        rgba(255,255,255,.08);
-
-    backdrop-filter:
-        blur(16px);
-
-    border:
-        1px solid rgba(255,255,255,.10);
+    background: rgba(15,23,42,.92);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.22);
+    box-shadow: 0 18px 40px rgba(0,0,0,.28);
 }
 
 .search-box input{
-
-    background:
-        rgba(255,255,255,.06);
-
-    border:
-        1px solid rgba(255,255,255,.10);
-
-    color:white;
+    width:100%;
+    background: rgba(255,255,255,.96);
+    border: 1px solid rgba(15,23,42,.16);
+    color: #0f172a;
+    padding: 12px 14px;
+    border-radius: 14px;
 }
 
 .search-box input::placeholder{
-    color:rgba(255,255,255,.55);
+    color: #64748b;
+}
+
+.filterBtn{
+    color: white;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(15,23,42,.84);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    transition: .2s ease;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, .18);
+}
+
+.filterBtn:hover,
+.filterBtn.active{
+    background: rgba(255,255,255,.92);
+    color: #0f172a;
+    border-color: rgba(255,255,255,.30);
+}
+
+.progress-bg{
+    background: rgba(255,255,255,.12);
 }
 
 /* LEGEND */
@@ -271,10 +280,6 @@ body{
 
 <div class="mb-10">
 
-<span class="page-label uppercase tracking-[4px] text-sm font-bold">
-    Dashboard Monitoring
-</span>
-
 <h1 class="page-title text-6xl font-extrabold mt-3 leading-tight">
 
     Peta Interaktif
@@ -287,7 +292,7 @@ body{
 
 <p class="page-desc text-xl mt-5 max-w-3xl leading-relaxed">
 
-    Pantau kondisi sungai Surabaya 
+     Temukan kondisi sungai, tingkat prioritas penanganan,
 
 </p>
 
@@ -310,7 +315,7 @@ body{
 <div class="info-card p-5">
 
     <div class="text-sm opacity-70">
-        Prioritas Tinggi
+        Kritis
     </div>
 
     <div class="text-4xl font-bold mt-2 text-red-400">
@@ -324,6 +329,7 @@ body{
     </div>
 
 </div>
+
 
 <div class="info-card p-5">
 
@@ -401,7 +407,25 @@ body{
             </div>
 
         </div>
+<div class="absolute top-24 left-16 z-[999] flex gap-2">
 
+    <button class="filterBtn" data-status="all">
+        Semua
+    </button>
+
+    <button class="filterBtn" data-status="Baik">
+        Baik
+    </button>
+
+    <button class="filterBtn" data-status="Perlu Perhatian">
+        Perlu Perhatian
+    </button>
+
+    <button class="filterBtn" data-status="Kritis">
+        Kritis
+    </button>
+
+</div>
         {{-- MAP HEADER --}}
         <div
             class="absolute top-5 right-5 z-[999]
@@ -497,14 +521,14 @@ body{
                 rounded-2xl px-5 py-4">
 
                 <div class="text-white/60 text-xs">
-                    Prioritas Tinggi
+                    Kritis
                 </div>
 
                 <div class="text-red-300 text-2xl font-bold">
 
                     {{
                         collect($rivers)
-                        ->where('status','Prioritas Tinggi')
+                        ->where('status','Kritis')
                         ->count()
                     }}
 
@@ -530,12 +554,8 @@ body{
 
     <div
         id="riverStatus"
-        class="inline-flex items-center px-4 py-2 rounded-full
-        bg-white/10 border border-white/10
-        text-sm text-[#7EF0C8] font-semibold">
-
+        class="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-[#7EF0C8] font-semibold">
         Belum Dianalisis
-
     </div>
 
     <h2
@@ -641,91 +661,6 @@ body{
 
 </div>
 
-{{-- ANALISIS --}}
-<div class="info-card mt-5 p-5">
-
-    <div class="font-semibold mb-5">
-        Analisis Lingkungan
-    </div>
-
-    <div class="space-y-5">
-
-        <div>
-
-            <div class="flex justify-between text-sm mb-2">
-
-                <span>Sampah Plastik</span>
-
-                <span id="plastikVal">
-                    0%
-                </span>
-
-            </div>
-
-            <div class="progress-bg h-2 rounded-full">
-
-                <div
-                    id="plastikBar"
-                    class="h-2 rounded-full bg-red-500"
-                    style="width:0%">
-                </div>
-
-            </div>
-
-        </div>
-
-        <div>
-
-            <div class="flex justify-between text-sm mb-2">
-
-                <span>Air Keruh</span>
-
-                <span id="sedimenVal">
-                    0%
-                </span>
-
-            </div>
-
-            <div class="progress-bg h-2 rounded-full">
-
-                <div
-                    id="sedimenBar"
-                    class="h-2 rounded-full bg-yellow-500"
-                    style="width:0%">
-                </div>
-
-            </div>
-
-        </div>
-
-        <div>
-
-            <div class="flex justify-between text-sm mb-2">
-
-                <span>Limbah Kimia</span>
-
-                <span id="kimiaVal">
-                    0%
-                </span>
-
-            </div>
-
-            <div class="progress-bg h-2 rounded-full">
-
-                <div
-                    id="kimiaBar"
-                    class="h-2 rounded-full bg-green-500"
-                    style="width:0%">
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
 <a
     id="detailBtn"
     href="#"
@@ -781,17 +716,20 @@ L.tileLayer(
     }
 ).addTo(map);
 
-function markerColor(score){
-
-    if(score >= 75){
+function markerColor(status){
+    if(status === 'Kritis'){
         return '#dc2626';
     }
 
-    if(score >= 50){
+    if(status === 'Perlu Perhatian'){
         return '#f59e0b';
     }
 
-    return '#16a34a';
+    if(status === 'Baik'){
+        return '#16a34a';
+    }
+
+    return '#999999';
 }
 
 let markers = [];
@@ -801,40 +739,79 @@ function updatePanel(river){
     riverName.innerText =
         river.name ?? '-';
 
-    riverLocation.innerText =
-        river.location ?? '-';
+    riverLocation.innerText = river.location ?? '-';
+    riverScore.innerText = (river.score ?? 0) + '%';
+    riverStatus.innerText = river.status ?? '-';
+    riverDesc.innerText = river.desc ?? '-';
 
-    riverScore.innerText =
-        river.score ?? 0;
-
-    riverStatus.innerText =
-        river.status ?? '-';
-
-    riverDesc.innerText =
-        river.desc ?? '-';
-
-    if(statusText){
-        statusText.innerText =
-            river.status ?? '-';
+    if (river.status === 'Baik') {
+        riverStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-emerald-100 text-emerald-900 font-semibold';
+    } else if (river.status === 'Perlu Perhatian') {
+        riverStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-amber-100 text-amber-900 font-semibold';
+    } else if (river.status === 'Kritis') {
+        riverStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-red-100 text-red-900 font-semibold';
+    } else {
+        riverStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm text-[#7EF0C8] font-semibold';
     }
 
-    if(galleryCount){
-        galleryCount.innerText =
-            river.gallery_count ?? 0;
+    if (statusText) {
+        statusText.innerText = river.status ?? '-';
     }
 
-    document
-        .getElementById('riverImage')
-        .src =
-            river.image;
+    if (galleryCount) {
+        galleryCount.innerText = river.gallery_count ?? 0;
+    }
 
-    detailBtn.href =
-        detailBaseUrl + '/' + river.slug;
+    document.getElementById('riverImage').src = river.image;
+    detailBtn.href = detailBaseUrl + '/' + river.slug;
 }
 
 if(rivers.length > 0){
     updatePanel(rivers[0]);
 }
+
+const filterButtons = document.querySelectorAll('.filterBtn');
+
+const defaultCenter = [-7.2575, 112.7521];
+const defaultZoom = 11;
+
+function applyFilter(status) {
+    filterButtons.forEach(button => {
+        button.classList.toggle('active', button.dataset.status === status);
+    });
+
+    let firstMatch = null;
+
+    markers.forEach(item => {
+        const matches = status === 'all' || item.data.status === status;
+
+        if (matches) {
+            if (!map.hasLayer(item.marker)) {
+                item.marker.addTo(map);
+            }
+            item.marker.setStyle({ radius: 10, weight: 3, opacity: 1, fillOpacity: 1 });
+            if (!firstMatch) {
+                firstMatch = item;
+            }
+        } else {
+            if (map.hasLayer(item.marker)) {
+                map.removeLayer(item.marker);
+            }
+        }
+    });
+
+    map.closePopup();
+
+    if (status === 'all') {
+        map.setView(defaultCenter, defaultZoom);
+    } else if (firstMatch) {
+        map.flyTo([firstMatch.data.lat, firstMatch.data.lng], 13, { duration: 1.5 });
+    }
+}
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => applyFilter(button.dataset.status));
+});
 
 rivers.forEach(river => {
 
@@ -842,7 +819,7 @@ rivers.forEach(river => {
         [river.lat, river.lng],
         {
             radius:10,
-            fillColor:markerColor(river.score),
+            fillColor:markerColor(river.status),
             color:'#fff',
             weight:3,
             fillOpacity:1
@@ -874,6 +851,13 @@ rivers.forEach(river => {
         </div>
     `);
 
+    marker.bindTooltip(
+    river.name,
+    {
+        permanent:false,
+        direction:'top'
+    }
+);
     marker.on('click', () => {
 
         updatePanel(river);
@@ -896,6 +880,8 @@ rivers.forEach(river => {
 
 });
 
+applyFilter('all');
+
 document
 .getElementById('searchRiver')
 .addEventListener('keyup', function(){
@@ -908,18 +894,10 @@ document
             item.name.includes(keyword)
         );
 
-    if(found){
-
-        map.flyTo(
-            [
-                found.data.lat,
-                found.data.lng
-            ],
-            13
-        );
-
+    if (found) {
+        map.flyTo([found.data.lat, found.data.lng], 13);
+        found.marker.setStyle({ radius: 16, weight: 5 });
         found.marker.openPopup();
-
         updatePanel(found.data);
     }
 
