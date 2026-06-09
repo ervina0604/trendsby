@@ -73,7 +73,7 @@ body {
 
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
 
-        <div class="absolute bottom-12 left-12 text-white">
+        <div class="absolute bottom-24 left-12 text-white">
 
             <span class="bg-yellow-500 px-5 py-2 rounded-full font-semibold">
                 {{ $sungai['status'] }}

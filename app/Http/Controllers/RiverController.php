@@ -10,18 +10,19 @@ class RiverController extends Controller
     public function show($slug)
     {
         $river = RiverLocation::with([
-            'posts.priorityScore',
-            'posts.sentimentAnalysis',
-            'posts.imageCaptionAnalyses',
-            'galleries'
-        ])
-        ->get()
-        ->first(function ($item) use ($slug) {
+    'posts.priorityScore',
+    'posts.sentimentAnalysis',
+    'posts.imageCaptionAnalyses',
+    'galleries'
+])
+->get()
+->first(function ($item) use ($slug) {
 
-            return Str::slug($item->river_name) === $slug;
-        });
+    return Str::slug(trim($item->river_name))
+        === trim($slug);
+});
 
-        abort_if(!$river, 404);
+abort_if(!$river, 404);
 
         $highestScore = $river->posts
             ->pluck('priorityScore')

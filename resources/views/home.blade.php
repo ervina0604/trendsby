@@ -454,7 +454,6 @@ body{
             <div id="homeMap" class="h-[620px] rounded-[32px] border border-white/10"></div>
         </div>
     </div>
-
     <div class="glass-card p-7">
 
     <img
@@ -478,9 +477,7 @@ body{
             <span
             id="statusBadge"
             class="status-badge">
-
                 -
-
             </span>
 
         </div>
@@ -537,6 +534,7 @@ body{
 
 <script>
 const rivers = @json($rivers);
+console.log(rivers);
 
 function color(status) {
     if (status === 'Baik') return '#22c55e';
@@ -589,7 +587,8 @@ function setRiverDetails(r) {
         badge.innerHTML = '🔴 Kritis';
     }
 
-    document.getElementById('detailLink').href = '/sungai/' + r.id;
+    document.getElementById('detailLink').href =
+        '/sungai/' + r.slug;
 }
 
 const map = L.map('homeMap').setView([-7.2575,112.7521], 11);
@@ -600,6 +599,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 if (rivers.length > 0) {
     setRiverDetails(rivers[0]);
 }
+const markers = [];
 
 rivers.forEach(r => {
     const marker = L.circleMarker([r.lat, r.lng], {
@@ -612,7 +612,15 @@ rivers.forEach(r => {
 
     marker.bindPopup(formatPopup(r));
 
-    marker.on('mouseover', () => marker.setStyle({ radius: 16 }));
+markers.push({
+    name: r.name.toLowerCase(),
+    marker: marker,
+    data: r
+});
+
+marker.on('mouseover', () =>
+    marker.setStyle({ radius: 16 })
+);
     marker.on('mouseout', () => marker.setStyle({ radius: 12 }));
     marker.on('click', () => {
         map.flyTo([r.lat, r.lng], 13, { duration: 1.5 });
@@ -620,13 +628,39 @@ rivers.forEach(r => {
     });
 });
 
-const searchInput = document.getElementById('searchRiver');
+const searchInput =
+    document.getElementById('searchRiver');
+
 searchInput.addEventListener('keyup', function () {
-    const keyword = this.value.toLowerCase();
-    const found = rivers.find(r => r.name.toLowerCase().includes(keyword));
-    if (found) {
-        map.flyTo([found.lat, found.lng], 13);
+
+    const keyword =
+        this.value.toLowerCase();
+
+    const found =
+        markers.find(item =>
+            item.name.includes(keyword)
+        );
+
+    if(found){
+
+        map.flyTo(
+            [
+                found.data.lat,
+                found.data.lng
+            ],
+            13,
+            {
+                duration: 1.5
+            }
+        );
+
+        found.marker.openPopup();
+
+        setRiverDetails(
+            found.data
+        );
     }
+
 });
 </script>
 

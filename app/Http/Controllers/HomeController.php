@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RiverLocation;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -27,6 +28,8 @@ class HomeController extends Controller
 
                 'name' => $river->river_name,
 
+                'slug' => Str::slug($river->river_name),
+
                 'lat' => $river->latitude,
 
                 'lng' => $river->longitude,
@@ -36,7 +39,10 @@ class HomeController extends Controller
                 ),
 
                 'score' => $highestScore
-                    ? round($highestScore->priority_value * 100, 2)
+                    ? round(
+                        $highestScore->priority_value * 100,
+                        2
+                    )
                     : 0,
 
                 'desc' => $river->district . ', ' . $river->city,
@@ -45,12 +51,12 @@ class HomeController extends Controller
                     ? asset('storage/' . $river->main_image_path)
                     : asset('storage/home-sungai.png'),
 
-                'slug' => strtolower(
-                    str_replace(' ', '-', $river->river_name)
-                ),
             ];
         });
 
-        return view('home', compact('rivers'));
+        return view(
+            'home',
+            compact('rivers')
+        );
     }
 }
