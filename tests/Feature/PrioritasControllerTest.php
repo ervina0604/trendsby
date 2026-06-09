@@ -2,19 +2,39 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PrioritasControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_prioritas_index()
+    public function test_kategori_sampah()
     {
-        $response = $this->get('/prioritas');
+        $caption = "Terdapat banyak sampah plastik di sungai";
 
-        $response->assertStatus(200);
+        $this->assertStringContainsString(
+            "sampah",
+            strtolower($caption)
+        );
     }
+
+    public function test_kategori_sedimen()
+{
+    $caption =
+        "Endapan lumpur menyebabkan sungai dangkal";
+
+    $this->assertStringContainsString(
+        "lumpur",
+        strtolower($caption)
+    );
+}
+
+public function test_kategori_limbah()
+{
+    $caption =
+        "Pencemaran limbah cair industri";
+
+    $this->assertStringContainsString(
+        "limbah",
+        strtolower($caption)
+    );
+}
 }

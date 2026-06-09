@@ -154,7 +154,7 @@ Menampilkan urutan prioritas sungai yang memerlukan perhatian berdasarkan hasil 
 </p>
 
 <div class="mt-6 text-[#0D5C46] font-semibold">
-Lihat Ranking →
+Lihat Ranking
 </div>
 
 </a>
